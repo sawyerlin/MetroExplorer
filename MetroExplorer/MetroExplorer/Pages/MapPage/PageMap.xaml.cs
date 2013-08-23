@@ -392,7 +392,7 @@
             //DataSource.NavigatorStorageFolders.Add(folder);
 
             //if (folder != null)
-                Frame.Navigate(typeof(PageExplorer));
+            Frame.Navigate(typeof(PageExplorer));
         }
 
         private void ButtonDeleteClick(object sender, RoutedEventArgs e)
@@ -447,5 +447,25 @@
         }
 
         #endregion
+
+        private void ButtonLocationClick(object sender, RoutedEventArgs e)
+        {
+            BottomAppBar.IsOpen = false;
+
+            MapPin pin = new MapPin(MapView);
+
+            pin.Dragging += (args) =>
+            {
+                var point = args.GetCurrentPoint(MapView);
+                Location location;
+
+                if(MapView.TryPixelToLocation(point.Position, out location)){
+                    // ToDo: get address
+                }
+            };
+
+            MapLayer.SetPosition(pin, MapView.Center);
+            MapView.Children.Add(pin);
+        }
     }
 }
