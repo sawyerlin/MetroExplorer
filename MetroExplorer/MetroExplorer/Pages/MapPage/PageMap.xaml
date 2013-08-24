@@ -180,8 +180,9 @@
 				<Button x:Name="ButtonLinkExplorer" Content="Link From Explorer" HorizontalAlignment="Left" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonLinkExplorerClick"/>
 				<Button x:Name="ButtonShow" Content="Show" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonShowClick"/>
 				<Button x:Name="ButtonDelete" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonDeleteClick"/>
+				<Path Stretch="Fill" Fill="#FFEB3A3A" Data="F1 M 343.75,339.438L 358,376.438L 329.5,376.438L 343.75,339.438 Z " Height="37" UseLayoutRounding="False" Width="28.5" PointerPressed="Path_PointerPressed" PointerReleased="Path_PointerReleased"/>
 				<Button x:Name="ButtonLocation" HorizontalAlignment="Right" VerticalAlignment="Stretch"
-						x:Uid="UidMapPageAppBarAddLinkPin" Click="ButtonLocationClick" ClickMode="Press">
+						x:Uid="UidMapPageAppBarAddLinkPin" ClickMode="Press">
 					<Button.Style>
 						<Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
 							<Setter Property="AutomationProperties.Name" Value=""/>

@@ -30,6 +30,9 @@
     using ExplorerPage;
     using MainPage;
     using Windows.Storage.Pickers;
+    using Windows.System.Threading;
+    using System.ComponentModel;
+    using Windows.UI.Core;
 
     public sealed partial class PageMap : LayoutAwarePage
     {
@@ -72,6 +75,11 @@
             _mapLocationFolderAccess = new DataAccess<MapLocationFolderModel>();
 
             _mapPins = new ObservableCollection<MapPin>();
+        }
+
+        void PageMap_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            
         }
 
         #endregion
@@ -448,9 +456,14 @@
 
         #endregion
 
-        private void ButtonLocationClick(object sender, RoutedEventArgs e)
+        private bool _isReleased;
+
+        public bool Addable { get; set; }
+
+        private void Path_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             BottomAppBar.IsOpen = false;
+            _isReleased = false;
 
             MapPin pin = new MapPin(MapView);
 
@@ -459,13 +472,37 @@
                 var point = args.GetCurrentPoint(MapView);
                 Location location;
 
-                if(MapView.TryPixelToLocation(point.Position, out location)){
+                if (MapView.TryPixelToLocation(point.Position, out location))
+                {
                     // ToDo: get address
                 }
             };
+            var currentPoint = e.GetCurrentPoint(MapView);
+            Location currentLocation;
+            bool addable = MapView.TryPixelToLocation(currentPoint.Position, out currentLocation);
 
-            MapLayer.SetPosition(pin, MapView.Center);
-            MapView.Children.Add(pin);
+            ThreadPoolTimer poolTimer = ThreadPoolTimer.CreatePeriodicTimer(async (timer) =>
+            {
+                if (!_isReleased)
+                {
+                    if (addable)
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() => {
+                            MapLayer.SetPosition(pin, currentLocation);
+                            MapView.Children.Add(pin);
+                        }));
+                    }
+                    if (timer != null)
+                        timer.Cancel();
+                }
+            }, TimeSpan.FromMilliseconds(1000), (timer) => {
+                
+            });
+        }
+
+        private void Path_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            _isReleased = true;
         }
     }
 }
