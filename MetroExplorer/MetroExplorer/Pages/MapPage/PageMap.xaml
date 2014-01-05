@@ -1,17 +1,15 @@
 ﻿<common:LayoutAwarePage
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:MetroExplorer.Pages.MapPage"
 	xmlns:common="using:MetroExplorer.Common"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:MapsControl="using:MetroExplorer.Components.Maps" 
-	xmlns:Maps="using:Bing.Maps"
-	x:Name="pageRoot"
+	xmlns:maps="using:Bing.Maps"
+	x:Name="PageRoot"
 	x:Class="MetroExplorer.Pages.MapPage.PageMap"
 	DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Mode=Self}}"
 	d:ExtensionType="Search"
-	mc:Ignorable="d">
+	mc:Ignorable="d" Margin="0,11,0,-11" >
 
 	<common:LayoutAwarePage.Resources>
 
@@ -147,7 +145,6 @@
 						TextAlignment="Center"
 						Width="88"
 						MaxHeight="32"
-						TextTrimming="WordEllipsis"
 						Style="{StaticResource BasicTextStyle}"/>
 				</StackPanel>
 				<Rectangle
@@ -180,7 +177,7 @@
 				<Button x:Name="ButtonLinkExplorer" Content="Link From Explorer" HorizontalAlignment="Left" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonLinkExplorerClick"/>
 				<Button x:Name="ButtonShow" Content="Show" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonShowClick"/>
 				<Button x:Name="ButtonDelete" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonDeleteClick"/>
-				<Path Stretch="Fill" Fill="#FFEB3A3A" Data="F1 M 343.75,339.438L 358,376.438L 329.5,376.438L 343.75,339.438 Z " Height="37" UseLayoutRounding="False" Width="28.5" PointerPressed="Path_PointerPressed" PointerReleased="Path_PointerReleased"/>
+				<Path Stretch="Fill" Fill="#FFEB3A3A" Data="F1 M 343.75,339.438L 358,376.438L 329.5,376.438L 343.75,339.438 Z " Height="37" UseLayoutRounding="False" Width="28.5" PointerPressed="Path_PointerPressed" ManipulationMode="All" />
 				<Button x:Name="ButtonLocation" HorizontalAlignment="Right" VerticalAlignment="Stretch"
 						x:Uid="UidMapPageAppBarAddLinkPin" ClickMode="Press">
 					<Button.Style>
@@ -223,7 +220,7 @@
 					<ColumnDefinition Width="645*"/>
 				</Grid.ColumnDefinitions>
 				<StackPanel Orientation="Horizontal">
-					<Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
+					<Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=PageRoot}" Style="{StaticResource BackButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
 				</StackPanel>
 				<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Width="0"/>
 			</Grid>
@@ -235,7 +232,7 @@
 		* Row 0 contains the back button and page title
 		* Row 1 contains the rest of the page layout
 	-->
-	<Grid Style="{StaticResource LayoutRootStyle}">
+	<Grid Style="{StaticResource LayoutRootStyle}" >
 
 		<VisualStateManager.VisualStateGroups>
 
@@ -265,6 +262,6 @@
 		</VisualStateManager.VisualStateGroups>
 
 		<!-- Back button and page title -->
-		<Maps:Map x:Name="MapView" Grid.Row="1" Credentials="Avs9-NFwIrWEbtFgLLePRSktqWRMX8X5Kmz5NiZyxgzL0JCG-S0K65VltPBX3uV1" Tapped="MapTapped"/>
+		<maps:Map x:Name="MapView" Grid.Row="1" Credentials="AsPYT_vMy_GGUG4UkqYf-xOR8bCeceHRtj7lrT_V0q8vkLv-mufGoE2a_TNYDUFB" AllowDrop="True" PointerMovedOverride="MapViewPointerMovedOverride" PointerReleasedOverride="MapView_PointerReleasedOverride" />
 	</Grid>
 </common:LayoutAwarePage>

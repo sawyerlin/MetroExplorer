@@ -106,6 +106,7 @@
                 _mapCenter = _map.Center;
                 _map.ViewChangeStarted += _map_ViewChangeStarted;
                 _map.PointerMovedOverride += _map_PointerMovedOverride;
+                _map.PointerMoved += _map_PointerMoved;
                 _map.PointerReleasedOverride += _map_PointerReleasedOverride;
             }
 
@@ -115,6 +116,11 @@
                 DragStarted(e);
 
             base.OnPointerPressed(e);
+        }
+
+        void _map_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            
         }
 
         void _map_PointerMovedOverride(object sender, PointerRoutedEventArgs e)

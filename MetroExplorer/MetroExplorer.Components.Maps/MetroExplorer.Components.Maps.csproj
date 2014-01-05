@@ -139,13 +139,13 @@
     <Content Include="DesignAssets\MapBackground.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Bing.Maps.Xaml, Version=1.113.0601.1">
+    <SDKReference Include="Bing.Maps.Xaml, Version=1.113.0601.2">
       <Name>Bing Maps for C#, C++, or Visual Basic</Name>
     </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, Version=11.0">
       <Name>Microsoft Visual C++ Runtime Package</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.WinRT, Version=3.7.17">
+    <SDKReference Include="SQLite.WinRT, Version=3.8.0.2">
       <Name>SQLite for Windows Runtime</Name>
     </SDKReference>
   </ItemGroup>
