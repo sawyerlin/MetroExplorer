@@ -70,13 +70,14 @@
 								<VisualState x:Name="UnMarked"/>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						<Ellipse Stretch="Fill" StrokeThickness="2" StrokeLineJoin="Round" Stroke="#FFD61D1D"/>
-						<Ellipse x:Name="ellipse" Stretch="Fill" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FFD61D1D" Width="20" Height="20" Margin="5"/>
+						<Ellipse Stretch="Fill" StrokeThickness="2" StrokeLineJoin="Round" Stroke="#FFD61D1D" Visibility="Collapsed"/>
+						<Ellipse x:Name="ellipse" Stretch="Fill" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FFD61D1D" Width="20" Height="20" Margin="5" Visibility="Collapsed"/>
 						<Path x:Name="path" Stretch="Fill" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FFD61D1D" Fill="#FFD02626" Data="F1 M -428.429,-6.10352e-005L -421.72,-15.9999L -435.138,-15.9999L -428.429,-6.10352e-005 Z " UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5,-12.25,2.75,10" Height="22.25" Width="14.75" RenderTransformOrigin="0.5,1" Visibility="Collapsed">
 							<Path.RenderTransform>
 								<CompositeTransform/>
 							</Path.RenderTransform>
 						</Path>
+						<Path Stretch="Fill" Fill="#FF000000" Data="F1 M 23,12C 27.9706,12 32,15.5817 32,20C 32,20.6906 31.9016,21.3608 31.7165,22L 23,36L 14.2835,22C 14.0984,21.3608 14,20.6906 14,20C 14,15.5817 18.0294,12 23,12 Z M 23,17.5C 21.6193,17.5 20.5,18.6193 20.5,20C 20.5,21.3807 21.6193,22.5 23,22.5C 24.3807,22.5 25.5,21.3807 25.5,20C 25.5,18.6193 24.3807,17.5 23,17.5 Z " UseLayoutRounding="False" Width="20" Height="30"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
