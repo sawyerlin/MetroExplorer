@@ -1,4 +1,6 @@
-﻿namespace MetroExplorer.Components.Maps
+﻿using Windows.Foundation;
+
+namespace MetroExplorer.Components.Maps
 {
     using System;
     using System.Collections.Generic;
@@ -44,7 +46,7 @@
 
         public Action<PointerRoutedEventArgs> DragStarted;
 
-        public Action<PointerRoutedEventArgs> Dragging;
+        public EventHandler<PointerRoutedEventArgs> Dragging;
 
         public Action<PointerRoutedEventArgs> DragCompleted;
 
@@ -127,17 +129,22 @@
         {
             if (_isDragging && _map != null)
             {
-                var point = e.GetCurrentPoint(_map);
-                Location location;
-
-                if (_map.TryPixelToLocation(point.Position, out location))
+                if (_isDragging && _map != null)
                 {
-                    MapLayer.SetPosition(this, location);
+                    Point currentPoint = e.GetCurrentPoint(_map).Position;
+                    Point transferedPoint = new Point(currentPoint.X - Width / 2,
+                        currentPoint.Y - Height / 2);
+                    Location location;
+
+                    if (_map.TryPixelToLocation(transferedPoint, out location))
+                    {
+                        MapLayer.SetPosition(this, location);
+                    }
                 }
 
                 if (Dragging != null)
                 {
-                    Dragging(e);
+                    Dragging(this, e);
                 }
             }
         }

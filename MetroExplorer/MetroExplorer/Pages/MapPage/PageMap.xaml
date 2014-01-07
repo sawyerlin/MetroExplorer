@@ -11,132 +11,132 @@
 	d:ExtensionType="Search"
 	mc:Ignorable="d" Margin="0,11,0,-11" >
 
-	<common:LayoutAwarePage.Resources>
+    <common:LayoutAwarePage.Resources>
 
-		<common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-		<!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
-		<x:String x:Key="AppName">My Application</x:String>
-		<ControlTemplate x:Key="ButtonBaseControlTemplate" TargetType="ButtonBase">
-			<Grid x:Name="RootGrid" Width="100" Background="Transparent">
+        <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
+        <x:String x:Key="AppName">My Application</x:String>
+        <ControlTemplate x:Key="ButtonBaseControlTemplate" TargetType="ButtonBase">
+            <Grid x:Name="RootGrid" Width="100" Background="Transparent">
 
-				<VisualStateManager.VisualStateGroups>
-					<VisualStateGroup x:Name="ApplicationViewStates">
-						<VisualState x:Name="FullScreenLandscape"/>
-						<VisualState x:Name="Filled"/>
-						<VisualState x:Name="FullScreenPortrait">
-							<Storyboard>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Visibility">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Width">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="60"/>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-						<VisualState x:Name="Snapped">
-							<Storyboard>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Visibility">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Width">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="60"/>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-					</VisualStateGroup>
-					<VisualStateGroup x:Name="CommonStates">
-						<VisualState x:Name="Normal"/>
-						<VisualState x:Name="PointerOver">
-							<Storyboard>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPointerOverBackgroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPointerOverForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-						<VisualState x:Name="Pressed">
-							<Storyboard>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPressedForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ColorAnimation Duration="0" To="Black" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path" d:IsOptimized="True"/>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Canvas.ZIndex)" Storyboard.TargetName="path">
-									<DiscreteObjectKeyFrame KeyTime="0">
-										<DiscreteObjectKeyFrame.Value>
-											<x:Int32>1</x:Int32>
-										</DiscreteObjectKeyFrame.Value>
-									</DiscreteObjectKeyFrame>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-						<VisualState x:Name="Disabled">
-							<Storyboard>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-					</VisualStateGroup>
-					<VisualStateGroup x:Name="FocusStates">
-						<VisualState x:Name="Focused">
-							<Storyboard>
-								<DoubleAnimation
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="ApplicationViewStates">
+                        <VisualState x:Name="FullScreenLandscape"/>
+                        <VisualState x:Name="Filled"/>
+                        <VisualState x:Name="FullScreenPortrait">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Visibility">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Width">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="60"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Snapped">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Visibility">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Width">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="60"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal"/>
+                        <VisualState x:Name="PointerOver">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPointerOverBackgroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPointerOverForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPressedForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ColorAnimation Duration="0" To="Black" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path" d:IsOptimized="True"/>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Canvas.ZIndex)" Storyboard.TargetName="path">
+                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Disabled">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TextLabel" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemDisabledForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="FocusStates">
+                        <VisualState x:Name="Focused">
+                            <Storyboard>
+                                <DoubleAnimation
 									Storyboard.TargetName="FocusVisualWhite"
 									Storyboard.TargetProperty="Opacity"
 									To="1"
 									Duration="0"/>
-								<DoubleAnimation
+                                <DoubleAnimation
 									Storyboard.TargetName="FocusVisualBlack"
 									Storyboard.TargetProperty="Opacity"
 									To="1"
 									Duration="0"/>
-							</Storyboard>
-						</VisualState>
-						<VisualState x:Name="Unfocused" />
-						<VisualState x:Name="PointerFocused" />
-					</VisualStateGroup>
-					<VisualStateGroup x:Name="CheckStates">
-						<VisualState x:Name="Checked">
-							<Storyboard>
-								<DoubleAnimation Duration="0" To="0" Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Opacity"/>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundCheckedGlyph" Storyboard.TargetProperty="Visibility">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
-								</ObjectAnimationUsingKeyFrames>
-								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-									<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPressedForegroundThemeBrush}"/>
-								</ObjectAnimationUsingKeyFrames>
-							</Storyboard>
-						</VisualState>
-						<VisualState x:Name="Unchecked"/>
-						<VisualState x:Name="Indeterminate"/>
-					</VisualStateGroup>
-				</VisualStateManager.VisualStateGroups>
-				<StackPanel VerticalAlignment="Top" Margin="0,12,0,11">
-					<Grid Width="40" Height="40" Margin="0,0,0,5" HorizontalAlignment="Center">
-						<Path x:Name="path" Stretch="Fill" Fill="White" Data="F1 M 344.208,367.333L 358,332L 330.417,332L 344.208,367.333 Z " UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="15" Height="17.5" Margin="11.75,12.5,13.25,10"/>
-						<TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" FontFamily="Segoe UI Symbol" FontSize="53.333" Margin="-4,-19,0,0" Foreground="{StaticResource AppBarItemBackgroundThemeBrush}"/>
-						<TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="53.333" Margin="-4,-19,0,0"/>
-						<ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
-					</Grid>
-					<TextBlock
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Unfocused" />
+                        <VisualState x:Name="PointerFocused" />
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="CheckStates">
+                        <VisualState x:Name="Checked">
+                            <Storyboard>
+                                <DoubleAnimation Duration="0" To="0" Storyboard.TargetName="OutlineGlyph" Storyboard.TargetProperty="Opacity"/>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundCheckedGlyph" Storyboard.TargetProperty="Visibility">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AppBarItemPressedForegroundThemeBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Unchecked"/>
+                        <VisualState x:Name="Indeterminate"/>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <StackPanel VerticalAlignment="Top" Margin="0,12,0,11">
+                    <Grid Width="40" Height="40" Margin="0,0,0,5" HorizontalAlignment="Center">
+                        <Path x:Name="path" Stretch="Fill" Fill="White" Data="F1 M 344.208,367.333L 358,332L 330.417,332L 344.208,367.333 Z " UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="15" Height="17.5" Margin="11.75,12.5,13.25,10"/>
+                        <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" FontFamily="Segoe UI Symbol" FontSize="53.333" Margin="-4,-19,0,0" Foreground="{StaticResource AppBarItemBackgroundThemeBrush}"/>
+                        <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="53.333" Margin="-4,-19,0,0"/>
+                        <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    </Grid>
+                    <TextBlock
 						x:Name="TextLabel"
 						Text="{TemplateBinding AutomationProperties.Name}"
 						Foreground="{StaticResource AppBarItemForegroundThemeBrush}"
@@ -146,8 +146,8 @@
 						Width="88"
 						MaxHeight="32"
 						Style="{StaticResource BasicTextStyle}"/>
-				</StackPanel>
-				<Rectangle
+                </StackPanel>
+                <Rectangle
 					x:Name="FocusVisualWhite"
 					IsHitTestVisible="False"
 					Stroke="{StaticResource FocusVisualWhiteStrokeThemeBrush}"
@@ -155,7 +155,7 @@
 					StrokeDashArray="1,1"
 					Opacity="0"
 					StrokeDashOffset="1.5"/>
-				<Rectangle
+                <Rectangle
 					x:Name="FocusVisualBlack"
 					IsHitTestVisible="False"
 					Stroke="{StaticResource FocusVisualBlackStrokeThemeBrush}"
@@ -164,104 +164,94 @@
 					Opacity="0"
 					StrokeDashOffset="0.5"/>
 
-			</Grid>
-		</ControlTemplate>
-	</common:LayoutAwarePage.Resources>
-	<common:LayoutAwarePage.BottomAppBar>
-		<AppBar FontFamily="Global User Interface" Background="#FF1e90cd" BorderBrush="Transparent">
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            </Grid>
+        </ControlTemplate>
+    </common:LayoutAwarePage.Resources>
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar FontFamily="Global User Interface" Background="#FF1e90cd" BorderBrush="Transparent">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-				<Button x:Name="ButtonUnMark" Content="UnMark" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding UnMarkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonUnMarkClick"/>
-				<Button x:Name="ButtonMark" Content="Mark" HorizontalAlignment="Left" VerticalAlignment="Center" Click="ButtonMarkClick" Visibility="{Binding Markable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-				<Button x:Name="ButtonLink" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Center" Click="ButtonLinkClick" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-				<Button x:Name="ButtonLinkExplorer" Content="Link From Explorer" HorizontalAlignment="Left" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonLinkExplorerClick"/>
-				<Button x:Name="ButtonShow" Content="Show" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonShowClick"/>
-				<Button x:Name="ButtonDelete" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonDeleteClick"/>
-				<Path Stretch="Fill" Fill="#FFEB3A3A" Data="F1 M 343.75,339.438L 358,376.438L 329.5,376.438L 343.75,339.438 Z " Height="37" UseLayoutRounding="False" Width="28.5" PointerPressed="Path_PointerPressed" ManipulationMode="All" />
-				<Button x:Name="ButtonLocation" HorizontalAlignment="Right" VerticalAlignment="Stretch"
-						x:Uid="UidMapPageAppBarAddLinkPin" ClickMode="Press">
-					<Button.Style>
-						<Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
-							<Setter Property="AutomationProperties.Name" Value=""/>
-							<Setter Property="Content" Value="&#xE10F;"/>
-							<Setter Property="Template" Value="{StaticResource ButtonBaseControlTemplate}"/>
-						</Style>
-					</Button.Style>
-				</Button>
-				<Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                <Button x:Name="ButtonUnMark" Content="UnMark" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding UnMarkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonUnMarkClick"/>
+                <Button x:Name="ButtonMark" Content="Mark" HorizontalAlignment="Left" VerticalAlignment="Center" Click="ButtonMarkClick" Visibility="{Binding Markable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Button x:Name="ButtonLink" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Center" Click="ButtonLinkClick" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Button x:Name="ButtonLinkExplorer" Content="Link From Explorer" HorizontalAlignment="Left" Visibility="{Binding Linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonLinkExplorerClick"/>
+                <Button x:Name="ButtonShow" Content="Show" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonShowClick"/>
+                <Button x:Name="ButtonDelete" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Visibility="{Binding FolderSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Click="ButtonDeleteClick"/>
+                <Path Stretch="Fill" Fill="#FF000000" Data="F1 M 23,12C 27.9706,12 32,15.5817 32,20C 32,20.6906 31.9016,21.3608 31.7165,22L 23,36L 14.2835,22C 14.0984,21.3608 14,20.6906 14,20C 14,15.5817 18.0294,12 23,12 Z M 23,17.5C 21.6193,17.5 20.5,18.6193 20.5,20C 20.5,21.3807 21.6193,22.5 23,22.5C 24.3807,22.5 25.5,21.3807 25.5,20C 25.5,18.6193 24.3807,17.5 23,17.5 Z " Height="45" UseLayoutRounding="False" Width="35" Margin="0,0,0,15" PointerPressed="Path_PointerPressed"/>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
 						x:Uid="UidMapPageAppBarMyPosition">
-					<Button.Style>
-						<Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
-							<Setter Property="AutomationProperties.Name" Value=""/>
-							<Setter Property="Content" Value="&#xE10F;"/>
-						</Style>
-					</Button.Style>
-				</Button>
-				<Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
+                            <Setter Property="AutomationProperties.Name" Value=""/>
+                            <Setter Property="Content" Value="&#xE10F;"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
 						x:Uid="UidMapPageAppBarSearchButton">
-					<Button.Style>
-						<Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
-							<Setter Property="AutomationProperties.Name" Value=""/>
-							<Setter Property="Content" Value="&#xE11A;"/>
-						</Style>
-					</Button.Style>
-				</Button>
-			</StackPanel>
-		</AppBar>
-	</common:LayoutAwarePage.BottomAppBar>
-	<common:LayoutAwarePage.TopAppBar>
-		<AppBar BorderThickness="0" BorderBrush="Transparent">
-			<AppBar.Background>
-				<SolidColorBrush Color="#FF1e90cd"/>
-			</AppBar.Background>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="28*"/>
-					<ColumnDefinition Width="645*"/>
-				</Grid.ColumnDefinitions>
-				<StackPanel Orientation="Horizontal">
-					<Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=PageRoot}" Style="{StaticResource BackButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
-				</StackPanel>
-				<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Width="0"/>
-			</Grid>
-		</AppBar>
-	</common:LayoutAwarePage.TopAppBar>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
+                            <Setter Property="AutomationProperties.Name" Value=""/>
+                            <Setter Property="Content" Value="&#xE11A;"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
+    <common:LayoutAwarePage.TopAppBar>
+        <AppBar BorderThickness="0" BorderBrush="Transparent">
+            <AppBar.Background>
+                <SolidColorBrush Color="#FF1e90cd"/>
+            </AppBar.Background>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="28*"/>
+                    <ColumnDefinition Width="645*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=PageRoot}" Style="{StaticResource BackButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Width="0"/>
+            </Grid>
+        </AppBar>
+    </common:LayoutAwarePage.TopAppBar>
 
-	<!--
+    <!--
 		This grid acts as a root panel for the page that defines two rows:
 		* Row 0 contains the back button and page title
 		* Row 1 contains the rest of the page layout
 	-->
-	<Grid Style="{StaticResource LayoutRootStyle}" >
+    <Grid Style="{StaticResource LayoutRootStyle}" >
 
-		<VisualStateManager.VisualStateGroups>
+        <VisualStateManager.VisualStateGroups>
 
-			<!-- Visual states reflect the application's view state -->
-			<VisualStateGroup x:Name="ApplicationViewStates">
-				<VisualState x:Name="FullScreenLandscape"/>
-				<VisualState x:Name="Filled"/>
+            <!-- Visual states reflect the application's view state -->
+            <VisualStateGroup x:Name="ApplicationViewStates">
+                <VisualState x:Name="FullScreenLandscape"/>
+                <VisualState x:Name="Filled"/>
 
-				<!-- The entire page respects the narrower 100-pixel margin convention for portrait -->
-				<VisualState x:Name="FullScreenPortrait">
-					<Storyboard>
-						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
-							<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PortraitBackButtonStyle}"/>
-						</ObjectAnimationUsingKeyFrames>
-					</Storyboard>
-				</VisualState>
+                <!-- The entire page respects the narrower 100-pixel margin convention for portrait -->
+                <VisualState x:Name="FullScreenPortrait">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PortraitBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
 
-				<!-- The back button and title have different styles when snapped -->
-				<VisualState x:Name="Snapped">
-					<Storyboard>
-						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
-							<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
-						</ObjectAnimationUsingKeyFrames>
-					</Storyboard>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
+                <!-- The back button and title have different styles when snapped -->
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
-		<!-- Back button and page title -->
-		<maps:Map x:Name="MapView" Grid.Row="1" Credentials="AsPYT_vMy_GGUG4UkqYf-xOR8bCeceHRtj7lrT_V0q8vkLv-mufGoE2a_TNYDUFB" AllowDrop="True" PointerMovedOverride="MapViewPointerMovedOverride" PointerReleasedOverride="MapView_PointerReleasedOverride" />
-	</Grid>
+        <!-- Back button and page title -->
+        <maps:Map x:Name="MapView" Grid.Row="1" Credentials="Are26uGLGiNyRU43-ChgoYyQl2gYL0G0HCp0rdPO5OFlr8Mn6uqy68HpHTVzJcUO" AllowDrop="True" PointerMovedOverride="MapViewPointerMovedOverride" PointerReleasedOverride="MapView_PointerReleasedOverride" />
+    </Grid>
 </common:LayoutAwarePage>

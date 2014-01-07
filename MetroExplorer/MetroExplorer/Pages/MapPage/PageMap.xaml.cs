@@ -1,4 +1,6 @@
-﻿namespace MetroExplorer.Pages.MapPage
+﻿using Windows.Foundation;
+
+namespace MetroExplorer.Pages.MapPage
 {
     using System;
     using System.Collections.Generic;
@@ -65,6 +67,7 @@
             _mapLocationFolderAccess = new DataAccess<MapLocationFolderModel>();
 
             _mapPins = new ObservableCollection<MapPin>();
+
 
             MapView.AllowDrop = true;
         }
@@ -410,41 +413,16 @@
 
         #endregion
 
-        private void Path_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (BottomAppBar != null) BottomAppBar.IsOpen = false;
-            MapView.CapturePointer(e.Pointer);
-            MapPin pin = new MapPin(MapView);
-
-            pin.Dragging += args =>
-            {
-                var point = args.GetCurrentPoint(MapView);
-                Location location;
-
-                if (MapView.TryPixelToLocation(point.Position, out location))
-                {
-                    // ToDo: get address
-                }
-            };
-            var currentPoint = e.GetCurrentPoint(MapView);
-            Location currentLocation;
-            MapView.TryPixelToLocation(currentPoint.Position, out currentLocation);
-
-            MapLayer.SetPosition(pin, currentLocation);
-            MapView.Children.Add(pin);
-
-            _focusedMapPin = pin;
-            _isDragging = true;
-        }
-
         private void MapViewPointerMovedOverride(object sender, PointerRoutedEventArgs e)
         {
             if (_isDragging && MapView != null)
             {
-                var point = e.GetCurrentPoint(MapView);
+                Point currentPoint = e.GetCurrentPoint(MapView).Position;
+                Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
+                    currentPoint.Y - _focusedMapPin.Height / 2);
                 Location location;
 
-                if (MapView.TryPixelToLocation(point.Position, out location))
+                if (MapView.TryPixelToLocation(transferedPoint, out location))
                 {
                     MapLayer.SetPosition(_focusedMapPin, location);
                 }
@@ -458,7 +436,54 @@
                 _isDragging = false;
                 _focusedMapPin = null;
             }
-            
+
+        }
+
+        private void Path_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (BottomAppBar != null) BottomAppBar.IsOpen = false;
+
+            MapView.CapturePointer(e.Pointer);
+            MapPin pin = new MapPin(MapView);
+
+            Point currentPoint = e.GetCurrentPoint(MapView).Position;
+
+            Location currentLocation;
+            MapView.TryPixelToLocation(currentPoint, out currentLocation);
+            MapLayer.SetPosition(pin, currentLocation);
+            MapView.Children.Add(pin);
+            Point transferedPoint = new Point(currentPoint.X - pin.Width / 2,
+                currentPoint.Y - pin.Height / 2);
+            MapView.TryPixelToLocation(transferedPoint, out currentLocation);
+            MapLayer.SetPosition(pin, currentLocation);
+
+            pin.Dragging += Dragging;
+
+            _focusedMapPin = pin;
+            _isDragging = true;
+        }
+
+        private void Dragging(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
+        {
+            MapPin pin = (MapPin)sender;
+            Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
+            Point transferedPoint = new Point(currentPoint.X - pin.Width / 2,
+                currentPoint.Y - pin.Height / 2);
+            Location location;
+
+            if (MapView.TryPixelToLocation(transferedPoint, out location))
+            {
+                _searchManager = MapView.SearchManager;
+                var reponse =
+                    _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location)).GetResults();
+                if (reponse == null) return;
+
+                foreach (GeocodeLocation geoLocation in reponse.LocationData)
+                {
+                    string address = geoLocation.Address.FormattedAddress;
+                    pin.DataContext = address;
+                }
+            }
         }
     }
 }
