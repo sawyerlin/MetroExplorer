@@ -3,14 +3,9 @@
 namespace MetroExplorer.Components.Maps
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
-    using Windows.UI.Xaml.Data;
-    using Windows.UI.Xaml.Documents;
     using Windows.UI.Xaml.Input;
-    using Windows.UI.Xaml.Media;
     using Bing.Maps;
     using Objects;
 
@@ -18,15 +13,15 @@ namespace MetroExplorer.Components.Maps
     {
         #region Fields
 
-        private bool _isDragging = false;
-        private Map _map;
+        private bool _isDragging; 
+        private readonly Map _map;
         private Location _mapCenter;
 
         #endregion
 
         #region Properties
 
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
 
         public string PinName { get; private set; }
 
@@ -60,7 +55,7 @@ namespace MetroExplorer.Components.Maps
 
         public MapPin()
         {
-            this.DefaultStyleKey = typeof(MapPin);
+            DefaultStyleKey = typeof(MapPin);
         }
 
         public MapPin(Map map)
@@ -122,7 +117,7 @@ namespace MetroExplorer.Components.Maps
 
         void _map_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            
+
         }
 
         void _map_PointerMovedOverride(object sender, PointerRoutedEventArgs e)

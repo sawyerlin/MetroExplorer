@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer", "MetroExplorer\MetroExplorer.csproj", "{68121672-25A8-4A15-A449-A75133CDA6EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.Core", "MetroExplorer.Core\MetroExplorer.Core.csproj", "{EFFF2BC1-84E8-4343-9E49-07CC4D0C8F7B}"
@@ -9,11 +11,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.Components.Navigator", "MetroExplorer.Components.Navigator\MetroExplorer.Components.Navigator.csproj", "{D7F662D5-755F-4A66-AE24-C07654AF3B04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.Test", "MetroExplorer.Test\MetroExplorer.Test.csproj", "{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.Components.Maps", "MetroExplorer.Components.Maps\MetroExplorer.Components.Maps.csproj", "{36359216-CFEC-4164-AF39-3F4F8AA4C764}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.DataSource", "MetroExplorer.DataSource\MetroExplorer.DataSource.csproj", "{4D3EECF8-7C0A-4F21-BDBC-4E36D6C7D304}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{153FF3CF-6525-48BD-8033-ED9193BE81EE}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,30 +90,6 @@ Global
 		{D7F662D5-755F-4A66-AE24-C07654AF3B04}.Release|x64.Build.0 = Release|x64
 		{D7F662D5-755F-4A66-AE24-C07654AF3B04}.Release|x86.ActiveCfg = Release|x86
 		{D7F662D5-755F-4A66-AE24-C07654AF3B04}.Release|x86.Build.0 = Release|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|ARM.ActiveCfg = Debug|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|ARM.Build.0 = Debug|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|ARM.Deploy.0 = Debug|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x64.ActiveCfg = Debug|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x64.Build.0 = Debug|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x64.Deploy.0 = Debug|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x86.ActiveCfg = Debug|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x86.Build.0 = Debug|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Debug|x86.Deploy.0 = Debug|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|ARM.ActiveCfg = Release|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|ARM.Build.0 = Release|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|ARM.Deploy.0 = Release|ARM
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x64.ActiveCfg = Release|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x64.Build.0 = Release|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x64.Deploy.0 = Release|x64
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x86.ActiveCfg = Release|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x86.Build.0 = Release|x86
-		{97E3E5A3-82CE-4BD4-9D98-A67899B1C31D}.Release|x86.Deploy.0 = Release|x86
 		{36359216-CFEC-4164-AF39-3F4F8AA4C764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{36359216-CFEC-4164-AF39-3F4F8AA4C764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36359216-CFEC-4164-AF39-3F4F8AA4C764}.Debug|ARM.ActiveCfg = Debug|ARM

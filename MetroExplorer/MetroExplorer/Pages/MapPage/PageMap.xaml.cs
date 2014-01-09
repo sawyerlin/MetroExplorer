@@ -198,14 +198,14 @@ namespace MetroExplorer.Pages.MapPage
                     MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
                         location.Latitude == mapPinElement.Latitude.ToString());
                     if (addedLocation != null)
-                        mapPinElement.ID = addedLocation.ID;
+                        mapPinElement.Id = addedLocation.ID;
 
                     _mapPins.Add(mapPinElement);
                 }
                 else
                 {
                     MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-                        location.ID.Equals(mapPinElement.ID));
+                        location.ID.Equals(mapPinElement.Id));
                     if (deleteLocation != null)
                         await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
 
@@ -231,7 +231,7 @@ namespace MetroExplorer.Pages.MapPage
                 MapPin mapPinElement = new MapPin(mapLocation.Name,
                     mapLocation.Description,
                     mapLocation.Latitude,
-                    mapLocation.Longitude) { ID = mapLocation.ID };
+                    mapLocation.Longitude) { Id = mapLocation.ID };
 
                 mapPinElement.MapPinTapped += MapPinElementMapPinTapped;
 
@@ -251,7 +251,7 @@ namespace MetroExplorer.Pages.MapPage
         {
             foreach (MapPin mapPin in _mapPins)
             {
-                if (DataSource.FocusedLocationId != null && DataSource.FocusedLocationId.Value.Equals(mapPin.ID))
+                if (DataSource.FocusedLocationId != null && DataSource.FocusedLocationId.Value.Equals(mapPin.Id))
                 {
                     _focusedMapPin = mapPin;
                     UpdateMapFolderList(DataSource.FocusedLocationId.Value);
@@ -313,7 +313,7 @@ namespace MetroExplorer.Pages.MapPage
                     DataSource.SelectedStorageFolders.Add(storageFolder);
             }
 
-            DataSource.FocusedLocationId = _focusedMapPin.ID;
+            DataSource.FocusedLocationId = _focusedMapPin.Id;
             Frame.Navigate(typeof(PageMain));
         }
 
@@ -338,7 +338,7 @@ namespace MetroExplorer.Pages.MapPage
                         ID = Guid.NewGuid(),
                         Name = storageFolder.Name,
                         Description = storageFolder.DateCreated.ToString(),
-                        MapLocationId = _focusedMapPin.ID,
+                        MapLocationId = _focusedMapPin.Id,
                         Token = token
                     });
 
@@ -385,7 +385,7 @@ namespace MetroExplorer.Pages.MapPage
             MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
                 location.Latitude == _focusedMapPin.Latitude.ToString());
             if (addedLocation != null)
-                _focusedMapPin.ID = addedLocation.ID;
+                _focusedMapPin.Id = addedLocation.ID;
 
             _mapPins.Add(_focusedMapPin);
             _focusedMapPin.Mark();
@@ -400,7 +400,7 @@ namespace MetroExplorer.Pages.MapPage
         private async void ButtonUnMarkClick(object sender, RoutedEventArgs e)
         {
             MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-                        location.ID.Equals(_focusedMapPin.ID));
+                        location.ID.Equals(_focusedMapPin.Id));
             if (deleteLocation != null)
                 await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
 
