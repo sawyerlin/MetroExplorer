@@ -154,7 +154,7 @@
         {
         }
 
-        public T AssociatedObject
+        public new T AssociatedObject
         {
             get
             {

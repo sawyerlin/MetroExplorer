@@ -463,7 +463,7 @@ namespace MetroExplorer.Pages.MapPage
             _isDragging = true;
         }
 
-        private void Dragging(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
+        private async void Dragging(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
         {
             MapPin pin = (MapPin)sender;
             Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
@@ -475,7 +475,8 @@ namespace MetroExplorer.Pages.MapPage
             {
                 _searchManager = MapView.SearchManager;
                 var reponse =
-                    _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location)).GetResults();
+                    await _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location));
+                
                 if (reponse == null) return;
 
                 foreach (GeocodeLocation geoLocation in reponse.LocationData)
