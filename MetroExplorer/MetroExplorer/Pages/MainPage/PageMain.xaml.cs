@@ -13,7 +13,6 @@
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Media.Imaging;
-    using Windows.UI.Xaml.Navigation;
     using Windows.Storage;
     using Windows.Storage.AccessCache;
     using Windows.Storage.FileProperties;
@@ -23,11 +22,11 @@
     using Core.Objects;
     using Core.Utils;
     using ExplorerPage;
-    using MetroExplorer.Pages.MapPage;
+    using MapPage;
 
     public sealed partial class PageMain : LayoutAwarePage, INotifyPropertyChanged
     {
-        private Dictionary<HomeItem, string> _dicItemToken;
+        private readonly Dictionary<HomeItem, string> _dicItemToken;
         private DispatcherTimer _folderImageChangeDispatcher;
         private ObservableCollection<GroupInfoList<HomeItem>> _explorerGroups;
         private VisualState _currentVisualState;
@@ -66,9 +65,10 @@
 
         protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            if (navigationParameter is ShareOperation)
+            var operation = navigationParameter as ShareOperation;
+            if (operation != null)
             {
-                ShareOperation shareOperation = (ShareOperation)navigationParameter;
+                ShareOperation shareOperation = operation;
                 if (shareOperation.Data.Contains(StandardDataFormats.StorageItems))
                     DataSource.ShareStorageItems = await shareOperation.Data.GetStorageItemsAsync();
             }
@@ -259,7 +259,7 @@
             StorageFolder storageFolder = await GetStorageFolderFromFolderPicker();
             if (storageFolder == null)
             {
-                EventLogger.onActionEvent(EventLogger.ADD_FOLDER_CANCEL, EventLogger.LABEL_HOME_PAGE);
+                EventLogger.OnActionEvent(EventLogger.AddFolderCancel, EventLogger.LabelHomePage);
                 return;
             }
             foreach (var key in _dicItemToken.Keys)
@@ -268,7 +268,7 @@
                     return;
             }
             AddNewFolder2(storageFolder);
-            EventLogger.onActionEvent(EventLogger.ADD_FOLDER_DONE, EventLogger.LABEL_HOME_PAGE);
+            EventLogger.OnActionEvent(EventLogger.AddFolderDone, EventLogger.LabelHomePage);
         }
 
         private async void AddNewFolder2(StorageFolder storageFolder)
@@ -303,7 +303,7 @@
         private async void ButtonAddNewDiskFolderClick(object sender, RoutedEventArgs e)
         {
             if (_currentVisualState != null && _currentVisualState.Name != null && _currentVisualState.Name.ToString() == "Snapped") return;
-            EventLogger.onActionEvent(EventLogger.ADD_FOLDER_CLICK, EventLogger.LABEL_HOME_PAGE);
+            EventLogger.OnActionEvent(EventLogger.AddFolderClick, EventLogger.LabelHomePage);
             await AddNewFolder();
         }
 

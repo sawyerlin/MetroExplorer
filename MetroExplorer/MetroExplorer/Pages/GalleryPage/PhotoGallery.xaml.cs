@@ -1,26 +1,22 @@
-﻿namespace MetroExplorer
+﻿namespace MetroExplorer.Pages.GalleryPage
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Linq;
-    using Windows.UI.Xaml;
-    using Windows.System;
-    using Windows.UI.Xaml.Controls;
-    using Windows.UI.Xaml.Navigation;
     using Windows.Storage;
-    using Windows.UI.Xaml.Media.Imaging;
     using Windows.Storage.FileProperties;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+    using Windows.UI.Xaml.Data;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media;
+    using Windows.UI.Xaml.Media.Imaging;
+    using Common;
     using Core;
     using Core.Objects;
     using Core.Utils;
-    using Common;
-    using UserPreferenceRecord;
-    using MetroExplorer.Pages.ExplorerPage;
-    using Windows.UI.Xaml.Data;
-    using Windows.UI.Xaml.Media;
-    using Windows.UI.Xaml.Input;
+    using ExplorerPage;
 
     /// <summary>
     /// Page affichant une collection groupée d'éléments.
@@ -48,54 +44,51 @@
         MediaElement _currentPlayMedia;
         Slider _currentVideoTimerSlider;
 
-        public PhotoGallery()
+        public PhotoGallery(bool sliderpressed)
         {
+            _sliderpressed = sliderpressed;
             InitializeComponent();
             DataContext = this;
-            this.Loaded += PhotoGallery_Loaded;
-            this.Unloaded += PhotoGallery_Unloaded;
-        }
-
-        void ImageFlipVIew_Unloaded(object sender, RoutedEventArgs e)
-        {
-           
+            Loaded += PhotoGallery_Loaded;
+            Unloaded += PhotoGallery_Unloaded;
         }
 
         void PhotoGallery_Unloaded(object sender, RoutedEventArgs e)
         {
         }
 
-        void PhotoGallery_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        void PhotoGallery_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadingProgressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            LoadingProgressBar.Visibility = Visibility.Visible;
         }
 
         protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            EventLogger.onActionEvent(EventLogger.FOLDER_OPENED);
-            LoadingProgressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            var _expoloreItems = navigationParameter as List<ExplorerItem>;
+            EventLogger.OnActionEvent(EventLogger.FolderOpened);
+            LoadingProgressBar.Visibility = Visibility.Visible;
+            var expoloreItems = navigationParameter as List<ExplorerItem>;
             int photoCount = 0;
-            foreach (ExplorerItem item in _expoloreItems)
-            {
-                if (photoCount > 50)
-                    break;
-                if (await PhotoThumbnail(item))
+            if (expoloreItems != null)
+                foreach (ExplorerItem item in expoloreItems)
                 {
-                    GalleryItems.Add(item);
-                    photoCount++;
+                    if (photoCount > 50)
+                        break;
+                    if (await PhotoThumbnail(item))
+                    {
+                        GalleryItems.Add(item);
+                        photoCount++;
+                    }
                 }
-            }
             MyVariableGridView.ItemsSource = GalleryItems;
             ImageFlipVIew.ItemsSource = GalleryItems;
             ImageFlipVIew.SelectedIndex = -1;
-            LoadingProgressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            LoadingProgressBar.Visibility = Visibility.Collapsed;
             LoadingProgressBar.Opacity = 0;
         }
 
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
-            foreach(var item in GalleryItems)
+            foreach (var item in GalleryItems)
             {
                 item.Image = null;
             }
@@ -137,12 +130,12 @@
 
         private void GoBack2(object sender, RoutedEventArgs e)
         {
-            if (MyVariableGridView.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
+            if (MyVariableGridView.Visibility == Visibility.Collapsed)
             {
-                MyVariableGridView.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                ImageFlipVIew.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                SliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                UnSliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                MyVariableGridView.Visibility = Visibility.Visible;
+                ImageFlipVIew.Visibility = Visibility.Collapsed;
+                SliderModeButton.Visibility = Visibility.Visible;
+                UnSliderModeButton.Visibility = Visibility.Collapsed;
                 if (_currentPlayMedia != null && (_currentPlayMedia.CurrentState != MediaElementState.Closed &&
                  _currentPlayMedia.CurrentState != MediaElementState.Stopped))
                     CloseAndUnloadLastMedia();
@@ -154,14 +147,14 @@
             }
         }
 
-        private void SliderModeButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void SliderModeButton_Click(object sender, RoutedEventArgs e)
         {
             if (GalleryItems.Count == 0) return;
-            SliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            UnSliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            SliderModeButton.Visibility = Visibility.Collapsed;
+            UnSliderModeButton.Visibility = Visibility.Visible;
 
-            MyVariableGridView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            ImageFlipVIew.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            MyVariableGridView.Visibility = Visibility.Collapsed;
+            ImageFlipVIew.Visibility = Visibility.Visible;
 
             if (ImageFlipVIew.Items != null && ImageFlipVIew.SelectedItem == null && ImageFlipVIew.Items.Count > 0)
                 ImageFlipVIew.SelectedIndex = 0;
@@ -171,7 +164,7 @@
             _sliderDispatcher.Tick += SliderDispatcher_Tick;
             _sliderDispatcher.Interval = new TimeSpan(0, 0, 0, 3);
             _sliderDispatcher.Start();
-            BottomAppBar.IsOpen = false;
+            if (BottomAppBar != null) BottomAppBar.IsOpen = false;
         }
 
         void SliderDispatcher_Tick(object sender, object e)
@@ -185,10 +178,10 @@
             }
         }
 
-        private void UnSliderModeButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void UnSliderModeButton_Click(object sender, RoutedEventArgs e)
         {
-            UnSliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            SliderModeButton.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            UnSliderModeButton.Visibility = Visibility.Collapsed;
+            SliderModeButton.Visibility = Visibility.Visible;
             if (_sliderDispatcher != null)
             {
                 _sliderDispatcher.Stop();
@@ -198,13 +191,13 @@
 
         private void StartFlipView(ExplorerItem item)
         {
-            if(ImageFlipVIew.ItemsSource == null)
+            if (ImageFlipVIew.ItemsSource == null)
                 ImageFlipVIew.ItemsSource = GalleryItems;
             if (item != null && GalleryItems.Contains(item))
             {
                 ImageFlipVIew.SelectedIndex = GalleryItems.IndexOf(item);
             }
-            else if (ImageFlipVIew.Items.Count > 0)
+            else if (ImageFlipVIew.Items != null && ImageFlipVIew.Items.Count > 0)
                 ImageFlipVIew.SelectedIndex = 0;
         }
 
@@ -216,7 +209,7 @@
 
             if (ImageFlipVIew.SelectedItem == null) return;
             var item = (ImageFlipVIew.SelectedItem as ExplorerItem);
-            if (item.StorageFile.IsVideoFile())
+            if (item != null && item.StorageFile.IsVideoFile())
             {
                 var container = ImageFlipVIew.ItemContainerGenerator.ContainerFromItem(item);
                 if (container == null)
@@ -224,7 +217,7 @@
                 var media = GetMediaElement(container);
                 if (media == null) return;
                 _currentVideoTimerSlider = GetSlider(container);
-                media.SetSource(await item.StorageFile.OpenAsync(Windows.Storage.FileAccessMode.Read), item.StorageFile.FileType);
+                media.SetSource(await item.StorageFile.OpenAsync(FileAccessMode.Read), item.StorageFile.FileType);
                 if (_sliderDispatcher != null)
                     _sliderDispatcher.Stop();
                 media.MediaFailed += media_MediaFailed;
@@ -247,10 +240,10 @@
                 _currentPlayMedia = null;
             }
             if (_currentVideoTimerSlider != null)
-            { 
+            {
                 _currentVideoTimerSlider.ValueChanged -= _currentVideoTimerSlider_ValueChanged;
                 _currentVideoTimerSlider.StepFrequency = 0;
-                _currentVideoTimerSlider.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                _currentVideoTimerSlider.Visibility = Visibility.Collapsed;
                 _currentVideoTimerSlider = null;
             }
             StopTimerForVideoSlider();
@@ -258,28 +251,28 @@
 
         void media_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Windows.UI.Xaml.Visibility.Visible)
+            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Visibility.Visible)
                 _sliderDispatcher.Start();
             CloseAndUnloadLastMedia();
         }
 
         void media_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Windows.UI.Xaml.Visibility.Visible)
+            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Visibility.Visible)
                 _sliderDispatcher.Start();
             CloseAndUnloadLastMedia();
         }
 
         void media_MediaOpened(object sender, RoutedEventArgs e)
         {
-            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Windows.UI.Xaml.Visibility.Visible)
+            if (_sliderDispatcher != null && UnSliderModeButton.Visibility == Visibility.Visible)
                 _sliderDispatcher.Stop();
             if (_currentPlayMedia != null && _currentVideoTimerSlider != null)
-            { 
+            {
                 double absvalue = (int)Math.Round(
                     _currentPlayMedia.NaturalDuration.TimeSpan.TotalSeconds,
                     MidpointRounding.AwayFromZero);
-                _currentVideoTimerSlider.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                _currentVideoTimerSlider.Visibility = Visibility.Collapsed;
                 _currentVideoTimerSlider.Maximum = absvalue;
                 _currentVideoTimerSlider.ValueChanged += _currentVideoTimerSlider_ValueChanged;
                 _currentVideoTimerSlider.StepFrequency = SliderFrequency(_currentPlayMedia.NaturalDuration.TimeSpan);
@@ -298,7 +291,7 @@
 
         private double SliderFrequency(TimeSpan timevalue)
         {
-            double stepfrequency = -1;
+            double stepfrequency;
 
             double absvalue = (int)Math.Round(
                 timevalue.TotalSeconds, MidpointRounding.AwayFromZero);
@@ -330,7 +323,6 @@
         {
             if (parent == null)
                 return null;
-            var list = new List<MediaElement> { };
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(parent, i), i), i), 1);
@@ -355,15 +347,10 @@
 
         private void MyVariableGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            MyVariableGridView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            ImageFlipVIew.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            MyVariableGridView.Visibility = Visibility.Collapsed;
+            ImageFlipVIew.Visibility = Visibility.Visible;
             if (e.ClickedItem != null)
                 StartFlipView(e.ClickedItem as ExplorerItem);
-        }
-
-        private void MediaElement_PointerPressed_1(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-
         }
 
         private void MediaElement_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -373,12 +360,12 @@
                 if (_currentPlayMedia.CurrentState == MediaElementState.Playing)
                 {
                     _currentPlayMedia.Pause();
-                    _currentVideoTimerSlider.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    _currentVideoTimerSlider.Visibility = Visibility.Visible;
                 }
                 else if (_currentPlayMedia.CurrentState == MediaElementState.Paused)
                 {
                     _currentPlayMedia.Play();
-                    _currentVideoTimerSlider.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    _currentVideoTimerSlider.Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -387,8 +374,10 @@
 
         private void SetupTimerForVideoSlider()
         {
-            _timerForVideoSlider = new DispatcherTimer();
-            _timerForVideoSlider.Interval = TimeSpan.FromSeconds(_currentVideoTimerSlider.StepFrequency);
+            _timerForVideoSlider = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(_currentVideoTimerSlider.StepFrequency)
+            };
             StartTimerForVideoSlider();
         }
 
@@ -415,21 +404,7 @@
             }
         }
 
-        private bool _sliderpressed = false;
-
-        void slider_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            _sliderpressed = true;
-        }
-
-        void slider_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
-        {
-            if (_currentVideoTimerSlider != null && _currentPlayMedia != null)
-            {
-                _currentPlayMedia.Position = TimeSpan.FromSeconds(_currentVideoTimerSlider.Value);
-                _sliderpressed = false;
-            }
-        }
+        private readonly bool _sliderpressed;
     }
 
     public sealed partial class PhotoGallery
@@ -456,8 +431,7 @@
                 var storageFile = (value as StorageFile);
                 return storageFile.IsVideoFile() ? "Visible" : "Collapsed";
             }
-            else
-                return "Collapsed";
+            return "Collapsed";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

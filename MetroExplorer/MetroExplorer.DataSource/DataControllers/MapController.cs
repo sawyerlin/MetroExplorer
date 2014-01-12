@@ -3,12 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.Practices.Unity;
     using DataModels;
-    using DataControllers;
     using DataConfigurations;
     using DataServices;
 
@@ -17,8 +14,8 @@
         [Dependency("MapServiceDesign")]
         public IMapService MapServiceDesign { get; set; }
 
-        [Dependency("MapServiceSQLite")]
-        public IMapService MapServiceSQLite { get; set; }
+        [Dependency("MapServiceSqLite")]
+        public IMapService MapServiceSqLite { get; set; }
 
         public async Task<ObservableCollection<MapModel>> GetSources(DataSourceType serviceName)
         {
@@ -27,12 +24,11 @@
                 case DataSourceType.Design:
                     return await MapServiceDesign.Load();
                 case DataSourceType.Sqlite:
-                    return await MapServiceSQLite.Load();
+                    return await MapServiceSqLite.Load();
                 default:
                     return null;
             }
         }
-
         public async Task Add(DataSourceType serviceName, MapModel map)
         {
             switch (serviceName)
@@ -41,13 +37,12 @@
                     await MapServiceDesign.Add(map);
                     break;
                 case DataSourceType.Sqlite:
-                    await MapServiceSQLite.Add(map);
+                    await MapServiceSqLite.Add(map);
                     break;
                 default:
                     return;
             }
         }
-
         public async Task Remove(DataSourceType serviceName, MapModel map)
         {
             switch (serviceName)
@@ -56,13 +51,12 @@
                     await MapServiceDesign.Remove(map);
                     break;
                 case DataSourceType.Sqlite:
-                    await MapServiceSQLite.Remove(map);
+                    await MapServiceSqLite.Remove(map);
                     break;
                 default:
                     return;
             }
         }
-
         public async Task Update(DataSourceType serviceName, MapModel map)
         {
             switch (serviceName)
@@ -71,14 +65,12 @@
                     await MapServiceDesign.Update(map);
                     break;
                 case DataSourceType.Sqlite:
-                    await MapServiceSQLite.Update(map);
+                    await MapServiceSqLite.Update(map);
                     break;
                 default:
                     return;
             }
         }
-
-
         public Task RemoveMany(DataSourceType serviceName, List<MapModel> sources)
         {
             throw new NotImplementedException();

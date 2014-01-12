@@ -1,57 +1,48 @@
 ﻿namespace MetroExplorer.Core.Utils
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml.Serialization;
-    using Windows.Storage;
-    using Windows.UI.Xaml.Media.Imaging;
-    using Objects;
 
     public class EventLogger
     {
-        private static readonly String UMENG_APP_KEY = "5151b11f56240bba2a002fbd";
+        private const String UmengAppKey = "5151b11f56240bba2a002fbd";
 
-        public static readonly String LABEL_HOME_PAGE = "home_page";//
-        public static readonly String LABEL_EXPLORER_PAGE = "explorer_page";//
+        public static readonly String LabelHomePage = "home_page";//
+        public static readonly String LabelExplorerPage = "explorer_page";//
 
-        public static readonly String ADD_FOLDER_CLICK = "add_folder_click";//
-        public static readonly String ADD_FOLDER_DONE = "add_folder_done";//
-        public static readonly String ADD_FOLDER_CANCEL = "add_folder_cancel";//
+        public static readonly String AddFolderClick = "add_folder_click";//
+        public static readonly String AddFolderDone = "add_folder_done";//
+        public static readonly String AddFolderCancel = "add_folder_cancel";//
 
-        public static readonly String FOLDER_OPENED = "folder_opened";//
-        public static readonly String FILE_OPENED = "file_opened";//
+        public static readonly String FolderOpened = "folder_opened";//
+        public static readonly String FileOpened = "file_opened";//
 
-        public static readonly String PHOTO_VIEWED = "photo_viewed";//
+        public static readonly String PhotoViewed = "photo_viewed";//
 
-        public static readonly String SUPPORT_US = "support_us";//
-        public static readonly String LANGUAGES_SETTINGS = "languages_settings";//
+        public static readonly String SupportUs = "support_us";//
+        public static readonly String LanguagesSettings = "languages_settings";//
 
-        public static readonly String PARAM_LANGUAGES_EN = "en";//
-        public static readonly String PARAM_LANGUAGES_FR = "fr";//
-        public static readonly String PARAM_LANGUAGES_ZH = "zh";//
+        public static readonly String ParamLanguagesEn = "en";//
+        public static readonly String ParamLanguagesFr = "fr";//
+        public static readonly String ParamLanguagesZh = "zh";//
 
 
-        public static void onLaunch()
+        public static void OnLaunch()
         {
             #if DEBUG
             UmengSDK.UmengAnalytics.setDebug(true);
             #endif
             UmengSDK.UmengAnalytics.setSessionContinueInterval(TimeSpan.FromSeconds(30));
-            UmengSDK.UmengAnalytics.onLaunching(UMENG_APP_KEY);
+            UmengSDK.UmengAnalytics.onLaunching(UmengAppKey);
         }
 
-        public static void onActionEvent(String event_id)
+        public static void OnActionEvent(String eventId)
         {
-            UmengSDK.UmengAnalytics.onEvent(event_id);
+            UmengSDK.UmengAnalytics.onEvent(eventId);
         }
 
-        public static void onActionEvent(String event_id, String label)
+        public static void OnActionEvent(String eventId, String label)
         {
-            UmengSDK.UmengAnalytics.onEvent(event_id, label);
+            UmengSDK.UmengAnalytics.onEvent(eventId, label);
         }
     }
 }

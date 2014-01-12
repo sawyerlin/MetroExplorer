@@ -3,18 +3,17 @@
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using SQLite;
     using DataModels;
     using DataConfigurations;
     using System.Collections.Generic;
 
-    public class MapServiceSQLite : IMapService
+    public class MapServiceSqLite : IMapService
     {
         private ObservableCollection<MapModel> _dataSources;
 
-        public MapServiceSQLite()
+        public MapServiceSqLite()
         {
             using (SQLiteConnection connection = new SQLiteConnection(SQLiteConfiguration.ConnectionString))
             {
@@ -94,7 +93,7 @@
 
             _locations.Remove(mapLocation);
 
-            connection.ExecuteAsync("DELETE FROM MapLocationFolders WHERE MapLocationId = ?", mapLocation.ID);
+            connection.ExecuteAsync("DELETE FROM MapLocationFolders WHERE MapLocationId = ?", mapLocation.Id);
 
             return connection.DeleteAsync(mapLocation);
         }
@@ -103,7 +102,7 @@
         {
             SQLiteAsyncConnection connection = new SQLiteAsyncConnection(SQLiteConfiguration.ConnectionString);
 
-            _locations.Remove(_locations.First(location => location.ID == mapLocation.ID));
+            _locations.Remove(_locations.First(location => location.Id == mapLocation.Id));
 
             _locations.Add(mapLocation);
 

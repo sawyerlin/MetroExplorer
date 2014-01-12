@@ -9,7 +9,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:navigator="using:MetroExplorer.Components.Navigator"
-	xmlns:bh="using:MetroExplorer.core.Behavior"
 	d:ExtensionType="Search"
 	mc:Ignorable="d">
 
@@ -42,17 +41,7 @@
 		<SolidColorBrush x:Key="TitleForeground" Color="{Binding TitleForeground}"/>
 
 		<local:RenameBoxVisibilityConverter x:Key="RenameBoxVisibilityConverter" />
-		<local:FolderFace1Converter x:Key="FolderFace1Converter" />
-		<local:FolderFace2Converter x:Key="FolderFace2Converter" />
 		<local:FileSizeFormatConverter x:Key="FileSizeFormatConverter" />
-
-		<DataTemplate x:Name="ExplorerItemImageLoadingAnimationTemplate">
-			<Storyboard>
-				<FadeInThemeAnimation  />
-				<!--<FadeOutThemeAnimation  />-->
-			</Storyboard>
-		</DataTemplate>
-
 		<DataTemplate x:Key="Standard300x180ItemTemplate">
 			<Grid HorizontalAlignment="Left" Width="280" Height="140" Margin="0" Background="{StaticResource ItemBigBackground}">
 				<Image Source="{Binding Image}" Stretch="{Binding ImageStretch}" 
@@ -599,7 +588,7 @@
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
-		</Style>
+        </Style>
         <Style x:Key="PinAppBarButtonStyle" TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
             <Setter Property="AutomationProperties.AutomationId" Value="PinAppBarButton"/>
             <Setter Property="AutomationProperties.Name" Value="Pin to Start"/>
@@ -793,7 +782,7 @@
 							  AllowDrop="True" IsTapEnabled="True"
 							  ItemClick="ItemGridView_ItemClick_1"
 							  SelectionMode="Multiple" 
-							  ItemContainerStyle="{StaticResource ExplorerGridViewItemStyle}" SelectionChanged="itemGridViewSelectionChanged">
+							  ItemContainerStyle="{StaticResource ExplorerGridViewItemStyle}" SelectionChanged="ItemGridViewSelectionChanged">
 						<!--<GridView.ItemsPanel>
 							<ItemsPanelTemplate>
 								<VirtualizingStackPanel VirtualizingStackPanel.VirtualizationMode="Recycling"  Orientation="Horizontal"/>

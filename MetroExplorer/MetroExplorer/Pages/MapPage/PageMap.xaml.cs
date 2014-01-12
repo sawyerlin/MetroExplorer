@@ -1,6 +1,4 @@
-﻿using Windows.Foundation;
-
-namespace MetroExplorer.Pages.MapPage
+﻿namespace MetroExplorer.Pages.MapPage
 {
     using System;
     using System.Collections.Generic;
@@ -21,8 +19,7 @@ namespace MetroExplorer.Pages.MapPage
     using DataSource.DataConfigurations;
     using DataSource.DataModels;
     using ExplorerPage;
-    using MainPage;
-    using Windows.Storage.Pickers;
+    using Windows.Foundation;
 
     public sealed partial class PageMap : LayoutAwarePage
     {
@@ -45,7 +42,8 @@ namespace MetroExplorer.Pages.MapPage
 
         // MapPins
         private readonly ObservableCollection<MapPin> _mapPins;
-        private MapPin _focusedMapPin, _lastFocusedMapPin;
+        private MapPin _focusedMapPin;
+        private readonly MapPin _lastFocusedMapPin;
 
         private bool _isDragging;
 
@@ -53,8 +51,9 @@ namespace MetroExplorer.Pages.MapPage
 
         #region Constructors
 
-        public PageMap()
+        public PageMap(MapPin lastFocusedMapPin)
         {
+            _lastFocusedMapPin = lastFocusedMapPin;
             InitializeComponent();
 
             _searchPane = SearchPane.GetForCurrentView();
@@ -127,41 +126,41 @@ namespace MetroExplorer.Pages.MapPage
             SearchPane sender,
             SearchPaneQuerySubmittedEventArgs args)
         {
-            GeocodeLocation geoCodeLocation = _searchResponse.LocationData
-                .FirstOrDefault(locationData => locationData.Address.FormattedAddress == args.QueryText) ??
-                _searchResponse.LocationData.FirstOrDefault();
+            //GeocodeLocation geoCodeLocation = _searchResponse.LocationData
+            //    .FirstOrDefault(locationData => locationData.Address.FormattedAddress == args.QueryText) ??
+            //    _searchResponse.LocationData.FirstOrDefault();
 
-            _lastFocusedMapPin = _focusedMapPin;
+            //_lastFocusedMapPin = _focusedMapPin;
 
-            if (geoCodeLocation != null)
-            {
-                MapPin existedMapPin = _mapPins.FirstOrDefault(mapPin =>
-                    mapPin.Latitude == geoCodeLocation.Location.Latitude.ToString()
-                    && mapPin.Longitude == geoCodeLocation.Location.Longitude.ToString());
-                if (existedMapPin == null)
-                {
-                    MapPin mapPinElement = new MapPin(string.Empty, string.Empty,
-                        geoCodeLocation.Location.Latitude.ToString(),
-                        geoCodeLocation.Location.Longitude.ToString());
+            //if (geoCodeLocation != null)
+            //{
+            //    MapPin existedMapPin = _mapPins.FirstOrDefault(mapPin =>
+            //        mapPin.Latitude == geoCodeLocation.Location.Latitude.ToString()
+            //        && mapPin.Longitude == geoCodeLocation.Location.Longitude.ToString());
+            //    if (existedMapPin == null)
+            //    {
+            //        MapPin mapPinElement = new MapPin(string.Empty, string.Empty,
+            //            geoCodeLocation.Location.Latitude.ToString(),
+            //            geoCodeLocation.Location.Longitude.ToString());
 
-                    mapPinElement.MapPinTapped += MapPinElementMapPinTapped;
-                    MapView.Children.Add(mapPinElement);
-                    MapLayer.SetPosition(mapPinElement, geoCodeLocation.Location);
-                    MapView.SetView(geoCodeLocation.Location, 15.0f);
-                    _focusedMapPin = mapPinElement;
-                }
-                else
-                {
-                    Location location = new Location(double.Parse(existedMapPin.Latitude), double.Parse(existedMapPin.Longitude));
-                    MapView.SetView(location, 15.0f);
-                    existedMapPin.Focus();
-                    _focusedMapPin = existedMapPin;
-                }
-                DefaultViewModel["Focused"] = true;
-            }
-            DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
+            //        mapPinElement.MapPinTapped += MapPinElementMapPinTapped;
+            //        MapView.Children.Add(mapPinElement);
+            //        MapLayer.SetPosition(mapPinElement, geoCodeLocation.Location);
+            //        MapView.SetView(geoCodeLocation.Location, 15.0f);
+            //        _focusedMapPin = mapPinElement;
+            //    }
+            //    else
+            //    {
+            //        Location location = new Location(double.Parse(existedMapPin.Latitude), double.Parse(existedMapPin.Longitude));
+            //        MapView.SetView(location, 15.0f);
+            //        existedMapPin.Focus();
+            //        _focusedMapPin = existedMapPin;
+            //    }
+            //    DefaultViewModel["Focused"] = true;
+            //}
+            //DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
+            //DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
+            //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
         }
 
         private void MapViewViewChangeEnded(object sender,
@@ -177,94 +176,94 @@ namespace MetroExplorer.Pages.MapPage
         private async void MapPinElementMapPinTapped(object sender,
             MapPinTappedEventArgs e)
         {
-            MapPin mapPinElement = (MapPin)sender;
+            //MapPin mapPinElement = (MapPin)sender;
 
-            if (mapPinElement.Focused)
-            {
-                if (e.Marked)
-                {
-                    await _mapLocationAccess.Add(
-                        DataSourceType.Sqlite,
-                        new MapLocationModel
-                    {
-                        ID = Guid.NewGuid(),
-                        Name = mapPinElement.Name,
-                        Description = mapPinElement.Description,
-                        Latitude = mapPinElement.Latitude,
-                        Longitude = mapPinElement.Longitude,
-                        MapId = _map.ID
-                    });
+            //if (mapPinElement.Focused)
+            //{
+            //    if (e.Marked)
+            //    {
+            //        await _mapLocationAccess.Add(
+            //            DataSourceType.Sqlite,
+            //            new MapLocationModel
+            //        {
+            //            Id = Guid.NewGuid(),
+            //            Name = mapPinElement.Name,
+            //            Description = mapPinElement.Description,
+            //            Latitude = mapPinElement.Latitude,
+            //            Longitude = mapPinElement.Longitude,
+            //            MapId = _map.ID
+            //        });
 
-                    MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
-                        location.Latitude == mapPinElement.Latitude.ToString());
-                    if (addedLocation != null)
-                        mapPinElement.Id = addedLocation.ID;
+            //        MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
+            //            location.Latitude == mapPinElement.Latitude.ToString());
+            //        if (addedLocation != null)
+            //            mapPinElement.Id = addedLocation.Id;
 
-                    _mapPins.Add(mapPinElement);
-                }
-                else
-                {
-                    MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-                        location.ID.Equals(mapPinElement.Id));
-                    if (deleteLocation != null)
-                        await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
+            //        _mapPins.Add(mapPinElement);
+            //    }
+            //    else
+            //    {
+            //        MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
+            //            location.Id.Equals(mapPinElement.Id));
+            //        if (deleteLocation != null)
+            //            await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
 
-                    _mapPins.Remove(mapPinElement);
-                }
-            }
+            //        _mapPins.Remove(mapPinElement);
+            //    }
+            //}
 
-            _lastFocusedMapPin = _focusedMapPin;
-            _focusedMapPin = mapPinElement;
+            //_lastFocusedMapPin = _focusedMapPin;
+            //_focusedMapPin = mapPinElement;
 
-            if (_lastFocusedMapPin != null)
-                _lastFocusedMapPin.UnFocus();
+            //if (_lastFocusedMapPin != null)
+            //    _lastFocusedMapPin.UnFocus();
 
-            if (!_focusedMapPin.Focused)
-                _focusedMapPin.Focus();
+            //if (!_focusedMapPin.Focused)
+            //    _focusedMapPin.Focus();
         }
 
         private void SetLocations(IEnumerable<MapLocationModel> locations)
         {
 
-            foreach (MapLocationModel mapLocation in locations)
-            {
-                MapPin mapPinElement = new MapPin(mapLocation.Name,
-                    mapLocation.Description,
-                    mapLocation.Latitude,
-                    mapLocation.Longitude) { Id = mapLocation.ID };
+            //foreach (MapLocationModel mapLocation in locations)
+            //{
+            //    MapPin mapPinElement = new MapPin(mapLocation.Name,
+            //        mapLocation.Description,
+            //        mapLocation.Latitude,
+            //        mapLocation.Longitude) { Id = mapLocation.Id };
 
-                mapPinElement.MapPinTapped += MapPinElementMapPinTapped;
+            //    mapPinElement.MapPinTapped += MapPinElementMapPinTapped;
 
-                MapView.Children.Add(mapPinElement);
-                Location location = new Location(double.Parse(mapLocation.Latitude), double.Parse(mapLocation.Longitude));
-                MapLayer.SetPosition(mapPinElement, location);
-                mapPinElement.Mark();
-                _mapPins.Add(mapPinElement);
-            }
+            //    MapView.Children.Add(mapPinElement);
+            //    Location location = new Location(double.Parse(mapLocation.Latitude), double.Parse(mapLocation.Longitude));
+            //    MapLayer.SetPosition(mapPinElement, location);
+            //    mapPinElement.Mark();
+            //    _mapPins.Add(mapPinElement);
+            //}
 
-            MapView.ViewChanged += MapViewViewChanged;
+            //MapView.ViewChanged += MapViewViewChanged;
 
         }
 
         private void MapViewViewChanged(object sender,
             ViewChangedEventArgs e)
         {
-            foreach (MapPin mapPin in _mapPins)
-            {
-                if (DataSource.FocusedLocationId != null && DataSource.FocusedLocationId.Value.Equals(mapPin.Id))
-                {
-                    _focusedMapPin = mapPin;
-                    UpdateMapFolderList(DataSource.FocusedLocationId.Value);
-                    //DataSource.SelectedStorageFolders = new List<StorageFolder>();
+            //foreach (MapPin mapPin in _mapPins)
+            //{
+            //    if (DataSource.FocusedLocationId != null && DataSource.FocusedLocationId.Value.Equals(mapPin.Id))
+            //    {
+            //        _focusedMapPin = mapPin;
+            //        UpdateMapFolderList(DataSource.FocusedLocationId.Value);
+            //        //DataSource.SelectedStorageFolders = new List<StorageFolder>();
 
-                    mapPin.Focus();
-                    DefaultViewModel["Focused"] = true;
-                    DataSource.FocusedLocationId = null;
-                }
-                mapPin.Mark();
-            }
+            //        mapPin.Focus();
+            //        DefaultViewModel["Focused"] = true;
+            //        DataSource.FocusedLocationId = null;
+            //    }
+            //    mapPin.Mark();
+            //}
 
-            MapView.ViewChanged -= MapViewViewChanged;
+            //MapView.ViewChanged -= MapViewViewChanged;
         }
 
         private async void UpdateMapFolderList(Guid mapLocationId)
@@ -303,112 +302,104 @@ namespace MetroExplorer.Pages.MapPage
 
         private async void ButtonLinkExplorerClick(object sender, RoutedEventArgs e)
         {
-            DataSource.SelectedStorageFolders = new List<StorageFolder>();
+            //DataSource.SelectedStorageFolders = new List<StorageFolder>();
 
-            // ToDo: DataSource.SelectedStorageFolders
-            foreach (MapLocationFolderModel folder in _mapLocationFolders)
-            {
-                StorageFolder storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(folder.Token, AccessCacheOptions.FastLocationsOnly);
-                if (storageFolder != null)
-                    DataSource.SelectedStorageFolders.Add(storageFolder);
-            }
+            //// ToDo: DataSource.SelectedStorageFolders
+            //foreach (MapLocationFolderModel folder in _mapLocationFolders)
+            //{
+            //    StorageFolder storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(folder.Token, AccessCacheOptions.FastLocationsOnly);
+            //    if (storageFolder != null)
+            //        DataSource.SelectedStorageFolders.Add(storageFolder);
+            //}
 
-            DataSource.FocusedLocationId = _focusedMapPin.Id;
-            Frame.Navigate(typeof(PageMain));
+            //DataSource.FocusedLocationId = _focusedMapPin.Id;
+            //Frame.Navigate(typeof(PageMain));
         }
 
         private async void ButtonLinkClick(object sender, RoutedEventArgs e)
         {
-            FolderPicker folderPicker = new FolderPicker
-            {
-                ViewMode = PickerViewMode.List,
-                SuggestedStartLocation = PickerLocationId.Desktop
-            };
-            folderPicker.FileTypeFilter.Add("*");
-            StorageFolder storageFolder = await folderPicker.PickSingleFolderAsync();
+            //FolderPicker folderPicker = new FolderPicker
+            //{
+            //    ViewMode = PickerViewMode.List,
+            //    SuggestedStartLocation = PickerLocationId.Desktop
+            //};
+            //folderPicker.FileTypeFilter.Add("*");
+            //StorageFolder storageFolder = await folderPicker.PickSingleFolderAsync();
 
-            if (storageFolder == null) return;
+            //if (storageFolder == null) return;
 
-            string token = StorageApplicationPermissions.FutureAccessList.Add(storageFolder, "link");
+            //string token = StorageApplicationPermissions.FutureAccessList.Add(storageFolder, "link");
 
-            if (!_mapLocationFolders.Any(folder => folder.Token.Equals(token)))
-            {
-                await _mapLocationFolderAccess.Add(DataSourceType.Sqlite, new MapLocationFolderModel
-                    {
-                        ID = Guid.NewGuid(),
-                        Name = storageFolder.Name,
-                        Description = storageFolder.DateCreated.ToString(),
-                        MapLocationId = _focusedMapPin.Id,
-                        Token = token
-                    });
+            //if (!_mapLocationFolders.Any(folder => folder.Token.Equals(token)))
+            //{
+            //    await _mapLocationFolderAccess.Add(DataSourceType.Sqlite, new MapLocationFolderModel
+            //        {
+            //            ID = Guid.NewGuid(),
+            //            Name = storageFolder.Name,
+            //            Description = storageFolder.DateCreated.ToString(),
+            //            MapLocationId = _focusedMapPin.Id,
+            //            Token = token
+            //        });
 
-                _mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
-                DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
-                DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-                DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-                DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
-            }
+            //    _mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
+            //    DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
+            //    DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
+            //    DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
+            //    DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
+            //}
         }
 
         private void ButtonShowClick(object sender, RoutedEventArgs e)
         {
-            //StorageFolder folder = await StorageApplicationPermissions.FutureAccessList
-            //    .GetFolderAsync(MapFolderListView.SelectedItem.Token);
-            //DataSource.NavigatorStorageFolders.Clear();
-            //DataSource.NavigatorStorageFolders.Add(folder);
-
-            //if (folder != null)
             Frame.Navigate(typeof(PageExplorer));
         }
 
         private void ButtonDeleteClick(object sender, RoutedEventArgs e)
         {
-            //if (MapFolderListView.SelectedItem != null)
-            //    await _mapLocationFolderAccess.RemoveMany(
-            //        DataSourceType.Sqlite, new List<MapLocationFolderModel> { MapFolderListView.SelectedItem });
         }
 
         private async void ButtonMarkClick(object sender, RoutedEventArgs e)
         {
-            await _mapLocationAccess.Add(
-                        DataSourceType.Sqlite,
-                        new MapLocationModel
-                        {
-                            ID = Guid.NewGuid(),
-                            Name = _focusedMapPin.Name,
-                            Description = _focusedMapPin.Description,
-                            Latitude = _focusedMapPin.Latitude,
-                            Longitude = _focusedMapPin.Longitude,
-                            MapId = _map.ID
-                        });
+            //await _mapLocationAccess.Add(
+            //            DataSourceType.Sqlite,
+            //            new MapLocationModel(_focusedMapPin.LocationModel.Name, ))
+            //            new MapLocationModel
+            //            {
+            //                Id = Guid.NewGuid(),
+            //                Name = _focusedMapPin.Name,
+            //                Description = _focusedMapPin.Description,
+            //                Latitude = _focusedMapPin.Latitude,
+            //                Longitude = _focusedMapPin.Longitude,
+            //                MapId = _map.ID
+            //            });
 
-            MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
-                location.Latitude == _focusedMapPin.Latitude.ToString());
-            if (addedLocation != null)
-                _focusedMapPin.Id = addedLocation.ID;
+            //MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
+            //    location.Latitude == _focusedMapPin.Latitude.ToString());
+            //if (addedLocation != null)
+            //    _focusedMapPin.Id = addedLocation.Id;
 
-            _mapPins.Add(_focusedMapPin);
-            _focusedMapPin.Mark();
-            if (addedLocation != null) _mapLocationFolderAccess.MapLocationId = addedLocation.ID;
-            _mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
-            DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
-            DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
+            //_mapPins.Add(_focusedMapPin);
+            //_focusedMapPin.Mark();
+            //if (addedLocation != null) _mapLocationFolderAccess.MapLocationId = addedLocation.Id;
+            //_mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
+            //DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
+            //DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
+            //DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
+            //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
         }
 
         private async void ButtonUnMarkClick(object sender, RoutedEventArgs e)
         {
-            MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-                        location.ID.Equals(_focusedMapPin.Id));
-            if (deleteLocation != null)
-                await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
+            //MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
+            //            location.Id.Equals(_focusedMapPin.Id));
+            //if (deleteLocation != null)
+            //    await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
 
-            _mapPins.Remove(_focusedMapPin);
-            _focusedMapPin.UnMark();
-            DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
+            //_mapPins.Remove(_focusedMapPin);
+            //_focusedMapPin.UnMark();
+            //DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
+            //DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
+            //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
         }
 
         #endregion
@@ -463,12 +454,11 @@ namespace MetroExplorer.Pages.MapPage
             _isDragging = true;
         }
 
-        private async void Dragging(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
+        private async void Dragging(PointerRoutedEventArgs pointerRoutedEventArgs)
         {
-            MapPin pin = (MapPin)sender;
             Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
-            Point transferedPoint = new Point(currentPoint.X - pin.Width / 2,
-                currentPoint.Y - pin.Height / 2);
+            Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
+                currentPoint.Y - _focusedMapPin.Height / 2);
             Location location;
 
             if (MapView.TryPixelToLocation(transferedPoint, out location))
@@ -476,13 +466,13 @@ namespace MetroExplorer.Pages.MapPage
                 _searchManager = MapView.SearchManager;
                 var reponse =
                     await _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location));
-                
+
                 if (reponse == null) return;
 
                 foreach (GeocodeLocation geoLocation in reponse.LocationData)
                 {
                     string address = geoLocation.Address.FormattedAddress;
-                    pin.DataContext = address;
+                    _focusedMapPin.DataContext = address;
                 }
             }
         }

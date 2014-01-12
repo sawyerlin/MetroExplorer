@@ -12,7 +12,7 @@
     /// http://winrtbehaviors.codeplex.com/SourceControl/changeset/view/19567#261274
     public abstract class Behavior : FrameworkElement
     {
-        private FrameworkElement associatedObject;
+        private FrameworkElement _associatedObject;
 
         /// <summary>
         /// The associated object
@@ -21,18 +21,18 @@
         {
             get
             {
-                return associatedObject;
+                return _associatedObject;
             }
             set
             {
-                if (associatedObject != null)
+                if (_associatedObject != null)
                 {
                     OnDetaching();
                 }
                 DataContext = null;
 
-                associatedObject = value;
-                if (associatedObject != null)
+                _associatedObject = value;
+                if (_associatedObject != null)
                 {
                     // FIX LocalJoost 17-08-2012 moved ConfigureDataContext to OnLoaded
                     // to prevent the app hanging on a behavior attached to an element#
@@ -71,22 +71,22 @@
         /// </summary>
         private async void ConfigureDataContext()
         {
-            while (associatedObject != null)
+            while (_associatedObject != null)
             {
                 if (AssociatedObjectIsInVisualTree)
                 {
-                    Debug.WriteLine(associatedObject.Name + " found in visual tree");
+                    Debug.WriteLine(_associatedObject.Name + " found in visual tree");
                     SetBinding(
                         DataContextProperty,
                         new Binding
                         {
                             Path = new PropertyPath("DataContext"),
-                            Source = associatedObject
+                            Source = _associatedObject
                         });
 
                     return;
                 }
-                Debug.WriteLine(associatedObject.Name + " Not in visual tree");
+                Debug.WriteLine(_associatedObject.Name + " Not in visual tree");
                 await WaitForLayoutUpdateAsync();
             }
         }
@@ -100,7 +100,7 @@
         {
             get
             {
-                if (associatedObject != null)
+                if (_associatedObject != null)
                 {
                     return Window.Current.Content != null && Ancestors.Contains(Window.Current.Content);
                 }
@@ -117,9 +117,9 @@
         {
             get
             {
-                if (associatedObject != null)
+                if (_associatedObject != null)
                 {
-                    var parent = VisualTreeHelper.GetParent(associatedObject);
+                    var parent = VisualTreeHelper.GetParent(_associatedObject);
 
                     while (parent != null)
                     {
@@ -139,8 +139,8 @@
         private async Task WaitForLayoutUpdateAsync()
         {
             await EventAsync.FromEvent<object>(
-                eh => associatedObject.LayoutUpdated += eh,
-                eh => associatedObject.LayoutUpdated -= eh);
+                eh => _associatedObject.LayoutUpdated += eh,
+                eh => _associatedObject.LayoutUpdated -= eh);
         }
     }
 
@@ -150,10 +150,6 @@
     /// <typeparam name="T"></typeparam>
     public abstract class Behavior<T> : Behavior where T : FrameworkElement
     {
-        protected Behavior()
-        {
-        }
-
         public new T AssociatedObject
         {
             get
@@ -249,8 +245,8 @@
 
         private sealed class EventHandlerTaskSource<TEventArgs>
         {
-            private readonly TaskCompletionSource<object> tcs;
-            private readonly Action<EventHandler<TEventArgs>> removeEventHandler;
+            private readonly TaskCompletionSource<object> _tcs;
+            private readonly Action<EventHandler<TEventArgs>> _removeEventHandler;
 
             public EventHandlerTaskSource(
                 Action<EventHandler<TEventArgs>> addEventHandler,
@@ -267,8 +263,8 @@
                     throw new ArgumentNullException("removeEventHandler");
                 }
 
-                this.tcs = new TaskCompletionSource<object>();
-                this.removeEventHandler = removeEventHandler;
+                _tcs = new TaskCompletionSource<object>();
+                _removeEventHandler = removeEventHandler;
                 addEventHandler.Invoke(EventCompleted);
 
                 if (beginAction != null)
@@ -282,20 +278,20 @@
             /// </summary>
             public Task<object> Task
             {
-                get { return tcs.Task; }
+                get { return _tcs.Task; }
             }
 
             private void EventCompleted(object sender, TEventArgs args)
             {
-                this.removeEventHandler.Invoke(EventCompleted);
-                this.tcs.SetResult(args);
+                _removeEventHandler.Invoke(EventCompleted);
+                _tcs.SetResult(args);
             }
         }
 
         private sealed class RoutedEventHandlerTaskSource
         {
-            private readonly TaskCompletionSource<RoutedEventArgs> tcs;
-            private readonly Action<RoutedEventHandler> removeEventHandler;
+            private readonly TaskCompletionSource<RoutedEventArgs> _tcs;
+            private readonly Action<RoutedEventHandler> _removeEventHandler;
 
             public RoutedEventHandlerTaskSource(
                 Action<RoutedEventHandler> addEventHandler,
@@ -312,8 +308,8 @@
                     throw new ArgumentNullException("removeEventHandler");
                 }
 
-                this.tcs = new TaskCompletionSource<RoutedEventArgs>();
-                this.removeEventHandler = removeEventHandler;
+                _tcs = new TaskCompletionSource<RoutedEventArgs>();
+                _removeEventHandler = removeEventHandler;
                 addEventHandler.Invoke(EventCompleted);
 
                 if (beginAction != null)
@@ -327,13 +323,13 @@
             /// </summary>
             public Task<RoutedEventArgs> Task
             {
-                get { return tcs.Task; }
+                get { return _tcs.Task; }
             }
 
             private void EventCompleted(object sender, RoutedEventArgs args)
             {
-                this.removeEventHandler.Invoke(EventCompleted);
-                this.tcs.SetResult(args);
+                _removeEventHandler.Invoke(EventCompleted);
+                _tcs.SetResult(args);
             }
         }
     }

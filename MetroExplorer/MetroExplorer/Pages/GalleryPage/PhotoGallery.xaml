@@ -1,5 +1,5 @@
 ﻿<common:LayoutAwarePage
-    x:Class="MetroExplorer.PhotoGallery"
+    x:Class="MetroExplorer.Pages.GalleryPage.PhotoGallery"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="using:MetroExplorer.Common"
@@ -7,11 +7,12 @@
     xmlns:local="using:MetroExplorer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:galleryPage="using:MetroExplorer.Pages.GalleryPage"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <local:FileTypeVisibilityConverter x:Key="FileTypeVisibilityConverter" />
+        <galleryPage:FileTypeVisibilityConverter x:Key="FileTypeVisibilityConverter" />
         <DataTemplate x:Key="FlipViewItemTemplate">
             <Grid>
                 <Image Source="{Binding Image}" Width="Auto" Height="Auto" Stretch="Uniform" Opacity="1"/>

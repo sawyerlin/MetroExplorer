@@ -10,16 +10,10 @@
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Data;
-    using Windows.UI.Xaml.Navigation;
-    using Windows.Storage.FileProperties;
-    using Windows.UI.Xaml.Media.Imaging;
     using Windows.ApplicationModel.DataTransfer;
-    using Windows.Storage.Streams;
-    using Windows.ApplicationModel;
     using Windows.ApplicationModel.Search;
     using Windows.System;
     using Common;
-    using Components.Navigator.Objects;
     using Core;
     using Core.Objects;
     using Core.Utils;
@@ -78,7 +72,7 @@
             Object navigationParameter,
             Dictionary<String, Object> pageState)
         {
-            EventLogger.onActionEvent(EventLogger.FOLDER_OPENED);
+            EventLogger.OnActionEvent(EventLogger.FolderOpened);
 
             await InitializeSearch(navigationParameter);
             InitializeShare();
@@ -122,43 +116,38 @@
 
         private async Task RefreshLocalFiles()
         {
-            LoadingProgressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            LoadingProgressBar.Visibility = Visibility.Visible;
             ExplorerItems.Clear();
             //if (_currentStorageFolder != null)
             if (DataSource.CurrentStorageFolder != null)
             {
                 // TODO: 添加try catch是避免用户在加载过程中连续两次刷新页面造成的ExplorerGroups清零混乱
-                try
+                await InitializeNavigator();
+                //var listFiles = await _currentStorageFolder.GetItemsAsync();
+                if (!DataSource.FromSearch)
                 {
-                    await InitializeNavigator();
-                    //var listFiles = await _currentStorageFolder.GetItemsAsync();
-                    if (!DataSource.FromSearch)
+                    var listFiles = await DataSource.CurrentStorageFolder.GetItemsAsync();
+                    foreach (var item in listFiles)
                     {
-                        var listFiles = await DataSource.CurrentStorageFolder.GetItemsAsync();
-                        foreach (var item in listFiles)
+                        if (item is StorageFile)
                         {
-                            if (item is StorageFile)
-                            {
-                                ExplorerItems.AddFileItem(item as StorageFile);
-                            }
-                            else if (item is StorageFolder)
-                            {
-                                ExplorerItems.AddStorageItem(item as StorageFolder);
-                            }
+                            ExplorerItems.AddFileItem(item as StorageFile);
+                        }
+                        else if (item is StorageFolder)
+                        {
+                            ExplorerItems.AddStorageItem(item as StorageFolder);
                         }
                     }
-                    else
-                    {
-                        ExplorerItems = DataSource.SearchedItems;
-                        DataSource.FromSearch = false;
-                        DataSource.SearchedItems = null;
-                    }
-                    _counterForLoadUnloadedItems = 0;
                 }
-                catch
-                { }
+                else
+                {
+                    ExplorerItems = DataSource.SearchedItems;
+                    DataSource.FromSearch = false;
+                    DataSource.SearchedItems = null;
+                }
+                _counterForLoadUnloadedItems = 0;
             }
-            LoadingProgressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            LoadingProgressBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -169,16 +158,16 @@
         private async void ItemGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             ExplorerItem item = e.ClickedItem as ExplorerItem;
-            if (item.Type == ExplorerItemType.Folder)
+            if (item != null && item.Type == ExplorerItemType.Folder)
             {
                 DataSource.NavigatorStorageFolders.Add(item.StorageFolder);
                 Frame.Navigate(typeof(PageExplorer), null);
             }
-            else if (item.Type == ExplorerItemType.File)
+            else if (item != null && item.Type == ExplorerItemType.File)
             {
                 var file = await StorageFile.GetFileFromPathAsync(item.Path);
                 await file.OpenAsync(FileAccessMode.Read);
-                EventLogger.onActionEvent(EventLogger.FILE_OPENED);
+                EventLogger.OnActionEvent(EventLogger.FileOpened);
                 await Launcher.LaunchFileAsync(file, new LauncherOptions { DisplayApplicationPicker = true });
             }
         }
@@ -197,11 +186,11 @@
 
         private void ButtonLinkClick(object sender, RoutedEventArgs e)
         {
-            itemGridView.SelectionChanged -= itemGridViewSelectionChanged;
+            itemGridView.SelectionChanged -= ItemGridViewSelectionChanged;
             Frame.Navigate(typeof(PageMap));
         }
 
-        private void itemGridViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ItemGridViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach (object removedItem in e.RemovedItems)
             {
@@ -417,12 +406,12 @@
             {
                 if (System.Convert.ToDouble(value) == 0)
                     return "";
-                else if (System.Convert.ToDouble(value) < 1024 * 1024)
-                    return Math.Round(System.Convert.ToDouble(value) / 1024, 2).ToString() + " KB";
-                else if (System.Convert.ToDouble(value) <= 1024 * 1024 * 1024)
-                    return Math.Round(System.Convert.ToDouble(value) / (1024 * 1024), 2).ToString() + " MB";
-                else if (System.Convert.ToDouble(value) > 1024 * 1024 * 1024)
-                    return Math.Round(System.Convert.ToDouble(value) / (1024 * 1024 * 1024), 2).ToString() + " GB";
+                if (System.Convert.ToDouble(value) < 1024 * 1024)
+                    return Math.Round(System.Convert.ToDouble(value) / 1024, 2) + " KB";
+                if (System.Convert.ToDouble(value) <= 1024 * 1024 * 1024)
+                    return Math.Round(System.Convert.ToDouble(value) / (1024 * 1024), 2) + " MB";
+                if (System.Convert.ToDouble(value) > 1024 * 1024 * 1024)
+                    return Math.Round(System.Convert.ToDouble(value) / (1024 * 1024 * 1024), 2) + " GB";
             }
             return "0 KB";
         }

@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.Practices.Unity;
     using DataControllers;
@@ -14,7 +12,7 @@
 
     public class DataAccess<T>
     {
-        private IController<T> _controller;
+        private readonly IController<T> _controller;
 
         public Guid MapId { get; set; }
 
@@ -23,9 +21,8 @@
         public DataAccess()
         {
             IUnityContainer container = new UnityContainer();
-            container = new UnityContainer();
             container.RegisterType<IMapService, MapServiceDesign>(typeof(MapServiceDesign).Name)
-                     .RegisterType<IMapService, MapServiceSQLite>(typeof(MapServiceSQLite).Name);
+                     .RegisterType<IMapService, MapServiceSqLite>(typeof(MapServiceSqLite).Name);
 
             if (typeof(T) == typeof(MapModel))
                 _controller = (IController<T>)container.Resolve<MapController>();

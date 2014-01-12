@@ -1,19 +1,19 @@
-﻿using Windows.Foundation;
-
-namespace MetroExplorer.Components.Maps
+﻿namespace MetroExplorer.Components.Maps
 {
     using System;
+    using Windows.Foundation;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Input;
     using Bing.Maps;
+    using DataSource.DataModels;
     using Objects;
 
     public sealed class MapPin : Control
     {
         #region Fields
 
-        private bool _isDragging; 
+        private bool _isDragging;
         private readonly Map _map;
         private Location _mapCenter;
 
@@ -21,15 +21,7 @@ namespace MetroExplorer.Components.Maps
 
         #region Properties
 
-        public Guid Id { get; set; }
-
-        public string PinName { get; private set; }
-
-        public string Description { get; private set; }
-
-        public string Latitude { get; private set; }
-
-        public string Longitude { get; private set; }
+        public MapLocationModel LocationModel { get; set; }
 
         public bool Marked { get; private set; }
 
@@ -41,7 +33,7 @@ namespace MetroExplorer.Components.Maps
 
         public Action<PointerRoutedEventArgs> DragStarted;
 
-        public EventHandler<PointerRoutedEventArgs> Dragging;
+        public Action<PointerRoutedEventArgs> Dragging;
 
         public Action<PointerRoutedEventArgs> DragCompleted;
 
@@ -65,16 +57,11 @@ namespace MetroExplorer.Components.Maps
         }
 
         public MapPin(
-            string pinName,
-            string description,
-            string latitude,
-            string longitude)
+            MapLocationModel locationModel)
             : this()
         {
-            PinName = pinName;
-            Description = description;
-            Latitude = latitude;
-            Longitude = longitude;
+            LocationModel = locationModel;
+            PointerPressed += MapPinPointerPressed;
         }
 
         #endregion
@@ -95,32 +82,23 @@ namespace MetroExplorer.Components.Maps
             if (MapPinTapped != null)
                 MapPinTapped(this, new MapPinTappedEventArgs(Marked));
         }
-
-        protected override void OnPointerPressed(PointerRoutedEventArgs e)
+        private void MapPinPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (_map != null)
             {
                 _mapCenter = _map.Center;
-                _map.ViewChangeStarted += _map_ViewChangeStarted;
-                _map.PointerMovedOverride += _map_PointerMovedOverride;
-                _map.PointerMoved += _map_PointerMoved;
-                _map.PointerReleasedOverride += _map_PointerReleasedOverride;
+                _map.ViewChangeStarted += MapViewChangeStarted;
+                _map.PointerMovedOverride += MapPointerMovedOverride;
+                _map.PointerReleasedOverride += MapPointerReleasedOverride;
             }
 
             _isDragging = true;
 
             if (DragStarted != null)
                 DragStarted(e);
-
-            base.OnPointerPressed(e);
         }
 
-        void _map_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-
-        }
-
-        void _map_PointerMovedOverride(object sender, PointerRoutedEventArgs e)
+        private void MapPointerMovedOverride(object sender, PointerRoutedEventArgs e)
         {
             if (_isDragging && _map != null)
             {
@@ -139,12 +117,12 @@ namespace MetroExplorer.Components.Maps
 
                 if (Dragging != null)
                 {
-                    Dragging(this, e);
+                    Dragging(e);
                 }
             }
         }
 
-        void _map_ViewChangeStarted(object sender, ViewChangeStartedEventArgs e)
+        private void MapViewChangeStarted(object sender, ViewChangeStartedEventArgs e)
         {
             if (_mapCenter != null)
             {
@@ -152,14 +130,14 @@ namespace MetroExplorer.Components.Maps
             }
         }
 
-        void _map_PointerReleasedOverride(object sender, PointerRoutedEventArgs e)
+        private void MapPointerReleasedOverride(object sender, PointerRoutedEventArgs e)
         {
             if (_map != null)
             {
                 _mapCenter = null;
-                _map.ViewChangeStarted -= _map_ViewChangeStarted;
-                _map.PointerMovedOverride -= _map_PointerMovedOverride;
-                _map.PointerReleasedOverride -= _map_PointerReleasedOverride;
+                _map.ViewChangeStarted -= MapViewChangeStarted;
+                _map.PointerMovedOverride -= MapPointerMovedOverride;
+                _map.PointerReleasedOverride -= MapPointerReleasedOverride;
             }
 
             _isDragging = false;

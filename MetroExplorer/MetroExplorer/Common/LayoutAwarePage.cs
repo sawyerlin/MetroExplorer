@@ -2,9 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
-    using Windows.Foundation;
     using Windows.Foundation.Collections;
     using Windows.Foundation.Metadata;
     using Windows.System;

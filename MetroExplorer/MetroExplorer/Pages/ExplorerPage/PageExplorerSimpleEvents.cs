@@ -1,4 +1,6 @@
-﻿namespace MetroExplorer.Pages.ExplorerPage
+﻿using MetroExplorer.Pages.GalleryPage;
+
+namespace MetroExplorer.Pages.ExplorerPage
 {
     using System;
     using System.Collections.Generic;

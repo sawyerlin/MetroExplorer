@@ -84,7 +84,7 @@
             // Ensure the current window is active
             Window.Current.Activate();
 
-            EventLogger.onLaunch();
+            EventLogger.OnLaunch();
         }
 
 

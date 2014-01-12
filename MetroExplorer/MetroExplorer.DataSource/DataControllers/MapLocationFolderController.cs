@@ -3,8 +3,6 @@
     using System;
     using System.Collections.ObjectModel;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.Practices.Unity;
     using DataConfigurations;
@@ -16,8 +14,8 @@
         [Dependency("MapServiceDesign")]
         public IMapService MapServiceDesign { get; set; }
 
-        [Dependency("MapServiceSQLite")]
-        public IMapService MapServiceSQLite { get; set; }
+        [Dependency("MapServiceSqLite")]
+        public IMapService MapServiceSqLite { get; set; }
 
         public Guid MapLocationId { get; set; }
 
@@ -28,7 +26,7 @@
                 case DataSourceType.Design:
                     return await MapServiceDesign.LoadLocationFolders(MapLocationId);
                 case DataSourceType.Sqlite:
-                    return await MapServiceSQLite.LoadLocationFolders(MapLocationId);
+                    return await MapServiceSqLite.LoadLocationFolders(MapLocationId);
                 default:
                     return null;
             }
@@ -36,7 +34,7 @@
 
         public async Task Add(DataSourceType serviceName, MapLocationFolderModel source)
         {
-            await MapServiceSQLite.AddLocationFolder(source);
+            await MapServiceSqLite.AddLocationFolder(source);
         }
 
         public Task Remove(DataSourceType serviceName, List<MapLocationFolderModel> source)
@@ -57,7 +55,7 @@
 
         public async Task RemoveMany(DataSourceType serviceName, List<MapLocationFolderModel> sources)
         {
-            await MapServiceSQLite.RemoveLocationFolders(sources);
+            await MapServiceSqLite.RemoveLocationFolders(sources);
         }
     }
 }

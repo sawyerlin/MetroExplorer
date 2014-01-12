@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using DataModels;
     using System.Collections.Generic;
@@ -17,7 +15,6 @@
         Task Remove(MapModel map);
 
         Task Update(MapModel map);
-
 
         Task<ObservableCollection<MapLocationModel>> LoadLocations(Guid mapId);
 

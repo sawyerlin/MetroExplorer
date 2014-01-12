@@ -1,61 +1,50 @@
-﻿
-
-// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
+﻿// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
 namespace MetroExplorer.RightMenuLayoutBars
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.IO;
-    using System.Linq;
-    using Windows.Foundation;
-    using Windows.Foundation.Collections;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Controls.Primitives;
-    using Windows.UI.Xaml.Data;
-    using Windows.UI.Xaml.Input;
-    using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Navigation;
     using Windows.UI.ApplicationSettings;
-    using Windows.UI.Xaml.Media.Animation;
-    using Windows.UI;
+    using Common;
     using Core.Utils;
     /// <summary>
     /// A basic page that provides characteristics common to most applications.
     /// </summary>
-    public sealed partial class SupportUs : Common.LayoutAwarePage
+    public sealed partial class SupportUs : LayoutAwarePage
     {
-        const int ContentAnimationOffset = 100;
-        DispatcherTimer dispatcherTimer = null;
+        private readonly DispatcherTimer _dispatcherTimer;
         public SupportUs()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Tick += dispatcherTimer_Tick;
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
 
-            this.Loaded += SupportUs_Loaded;
-            this.Unloaded += SupportUs_Unloaded;
+            Loaded += SupportUs_Loaded;
+            Unloaded += SupportUs_Unloaded;
         }
 
         void SupportUs_Loaded(object sender, RoutedEventArgs e)
         {
-            dispatcherTimer.Start();
-            EventLogger.onActionEvent(EventLogger.SUPPORT_US);
+            _dispatcherTimer.Start();
+            EventLogger.OnActionEvent(EventLogger.SupportUs);
         }
 
         void SupportUs_Unloaded(object sender, RoutedEventArgs e)
         {
-            dispatcherTimer.Stop();
+            _dispatcherTimer.Stop();
         }
 
         void dispatcherTimer_Tick(object sender, object e)
         {
-            AdControl1.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            dispatcherTimer.Stop();
+            AdControl1.Visibility = Visibility.Visible;
+            _dispatcherTimer.Stop();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -89,7 +78,7 @@ namespace MetroExplorer.RightMenuLayoutBars
         private void MySettingsBackClicked(object sender, RoutedEventArgs e)
         {
             // First close our Flyout.
-            Popup parent = this.Parent as Popup;
+            Popup parent = Parent as Popup;
             if (parent != null)
             {
                 parent.IsOpen = false;
@@ -101,7 +90,7 @@ namespace MetroExplorer.RightMenuLayoutBars
                 SettingsPane.Show();
             }
 
-            AdControl1.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            AdControl1.Visibility = Visibility.Collapsed;
         }
 
         #region propertychanged
@@ -117,7 +106,7 @@ namespace MetroExplorer.RightMenuLayoutBars
         #endregion
     }
 
-    public sealed partial class SupportUs : MetroExplorer.Common.LayoutAwarePage, INotifyPropertyChanged
+    public sealed partial class SupportUs : LayoutAwarePage, INotifyPropertyChanged
     {
         private string _backgroundColor = "WHITE";
         public string BackgroundColor
@@ -229,29 +218,6 @@ namespace MetroExplorer.RightMenuLayoutBars
                 _itemBigBackground = value;
                 NotifyPropertyChanged("ItemBigBackground");
             }
-        }
-
-        private void ChangeTheme()
-        {
-            MainBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(System.Convert.ToByte("FF", 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(3, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(5, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(7, 2), 16)));
-            MainGrid.Background = new SolidColorBrush(Color.FromArgb(System.Convert.ToByte("FF", 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(3, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(5, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(7, 2), 16)));
-            FlyoutContent.Background = new SolidColorBrush(Color.FromArgb(System.Convert.ToByte("FF", 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(3, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(5, 2), 16),
-                                                                       System.Convert.ToByte(Theme.ThemeLibarary.ItemBigBackground.Substring(7, 2), 16)));
-        }
-
-        static byte[] GetBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
         }
     }
 }

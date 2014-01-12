@@ -1,10 +1,6 @@
 ﻿namespace MetroExplorer.DataSource.DataModels
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using SQLite;
 
     [Table("MapLocations")]
@@ -13,7 +9,7 @@
         #region Properties
 
         [PrimaryKey]
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
 
         [Indexed]
         public Guid MapId { get; set; }
@@ -26,12 +22,21 @@
 
         public string Longitude { get; set; }
 
-
         #endregion
+
+        public MapLocationModel() { }
+
+        public MapLocationModel(string name, string description, string latitude, string longtitude)
+        {
+            Name = name;
+            Description = description;
+            Latitude = latitude;
+            Longitude = longtitude;
+        }
 
         public bool Equals(MapLocationModel other)
         {
-            return ID.Equals(other.ID);
+            return Id.Equals(other.Id);
         }
     }
 }
