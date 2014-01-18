@@ -14,7 +14,7 @@
     using DataSource.DataModels;
     using Windows.Foundation;
 
-    public sealed partial class PageMap 
+    public sealed partial class PageMap
     {
         #region Fields
 
@@ -55,8 +55,8 @@
             _mapDataAccess = new DataAccess<MapModel>();
             _mapLocationAccess = new DataAccess<MapLocationModel>();
 
-
             MapView.AllowDrop = true;
+            ButtonPosition.AddHandler(PointerPressedEvent, new PointerEventHandler(ButtonPositionPointerPressed), true);
         }
 
         #endregion
@@ -211,9 +211,10 @@
 
         }
 
-        private void Path_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void ButtonPositionPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (BottomAppBar != null) BottomAppBar.IsOpen = false;
+            if (TopAppBar != null) TopAppBar.IsOpen = false;
 
             MapView.CapturePointer(e.Pointer);
             MapPin pin = new MapPin(MapView);
@@ -233,6 +234,8 @@
 
             _focusedMapPin = pin;
             _isDragging = true;
+
+            e.Handled = true;
         }
 
         private async void Dragging(PointerRoutedEventArgs pointerRoutedEventArgs)

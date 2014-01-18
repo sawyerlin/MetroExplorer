@@ -248,5 +248,10 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<DataTemplate x:Key="ButtonMapPinDataTemplate">
+		<Grid>
+			<Path Stretch="Fill" Fill="White" Data="F1 M 23,12C 27.9706,12 32,15.5817 32,20C 32,20.6906 31.9016,21.3608 31.7165,22L 23,36L 14.2835,22C 14.0984,21.3608 14,20.6906 14,20C 14,15.5817 18.0294,12 23,12 Z M 23,17.5C 21.6193,17.5 20.5,18.6193 20.5,20C 20.5,21.3807 21.6193,22.5 23,22.5C 24.3807,22.5 25.5,21.3807 25.5,20C 25.5,18.6193 24.3807,17.5 23,17.5 Z " HorizontalAlignment="Center" VerticalAlignment="Center" Width="18" Height="23" Margin="-2,2,0,0"/>
+		</Grid>
+	</DataTemplate>
 
 </ResourceDictionary>

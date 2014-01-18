@@ -170,21 +170,26 @@
     <common:LayoutAwarePage.BottomAppBar>
         <AppBar FontFamily="Global User Interface" Background="#FF1e90cd" BorderBrush="Transparent">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Path Stretch="Fill" Fill="#FF000000" Data="F1 M 23,12C 27.9706,12 32,15.5817 32,20C 32,20.6906 31.9016,21.3608 31.7165,22L 23,36L 14.2835,22C 14.0984,21.3608 14,20.6906 14,20C 14,15.5817 18.0294,12 23,12 Z M 23,17.5C 21.6193,17.5 20.5,18.6193 20.5,20C 20.5,21.3807 21.6193,22.5 23,22.5C 24.3807,22.5 25.5,21.3807 25.5,20C 25.5,18.6193 24.3807,17.5 23,17.5 Z " Height="45" UseLayoutRounding="False" Width="35" Margin="0,0,0,15" PointerPressed="Path_PointerPressed"/>
+                <Button x:Name="ButtonPosition" HorizontalAlignment="Right" VerticalAlignment="Stretch" 
+                	x:Uid="UidMapPageAppBarAddPosition" AutomationProperties.Name="Ajouter un repère" ContentTemplate="{StaticResource ButtonMapPinDataTemplate}">
+                	<Button.Style>
+                		<Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}"/>
+					</Button.Style>
+                </Button>
                 <Button x:Name="ButtonHome" HorizontalAlignment="Right" VerticalAlignment="Stretch" 
-						x:Uid="UidMapPageAppBarMyPosition" AutomationProperties.Name="Home">
+						x:Uid="UidMapPageAppBarMyPosition">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
-                            <Setter Property="AutomationProperties.Name" Value=""/>
+                            <Setter Property="AutomationProperties.Name" Value="Ma Position"/>
                             <Setter Property="Content" Value="&#xE10F;"/>
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
-						x:Uid="UidMapPageAppBarSearchButton">
+                <Button x:Name="ButtonSearch" HorizontalAlignment="Right" VerticalAlignment="Stretch"
+						x:Uid="UidMapPageAppBarSearchButton" >
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
-                            <Setter Property="AutomationProperties.Name" Value=""/>
+                            <Setter Property="AutomationProperties.Name" Value="Rechercher"/>
                             <Setter Property="Content" Value="&#xE11A;"/>
                         </Style>
                     </Button.Style>
