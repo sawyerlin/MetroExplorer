@@ -38,35 +38,35 @@
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled) return;
 
             // Crée un modèle d'affichage par défaut vide
-            this.DefaultViewModel = new ObservableDictionary<String, Object>();
+            DefaultViewModel = new ObservableDictionary<String, Object>();
 
             // Lorsque cette page fait partie de l'arborescence d'éléments visuels, effectue deux modifications :
             // 1) Mappe l'état d'affichage de l'application à l'état visuel pour la page
             // 2) Traite les requêtes de navigation à l'aide du clavier ou de la souris
-            this.Loaded += (sender, e) =>
+            Loaded += (sender, e) =>
             {
-                this.StartLayoutUpdates(sender, e);
+                StartLayoutUpdates(sender, e);
 
                 // La navigation à l'aide du clavier et de la souris s'applique uniquement lorsque la totalité de la fenêtre est occupée
-                if (this.ActualHeight == Window.Current.Bounds.Height &&
-                    this.ActualWidth == Window.Current.Bounds.Width)
+                if (ActualHeight == Window.Current.Bounds.Height &&
+                    ActualWidth == Window.Current.Bounds.Width)
                 {
                     // Écoute directement la fenêtre, ce qui ne requiert pas le focus
                     Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated +=
                         CoreDispatcher_AcceleratorKeyActivated;
                     Window.Current.CoreWindow.PointerPressed +=
-                        this.CoreWindow_PointerPressed;
+                        CoreWindow_PointerPressed;
                 }
             };
 
             // Annule les mêmes modifications lorsque la page n'est plus visible
-            this.Unloaded += (sender, e) =>
+            Unloaded += (sender, e) =>
             {
-                this.StopLayoutUpdates(sender, e);
+                StopLayoutUpdates(sender, e);
                 Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated -=
                     CoreDispatcher_AcceleratorKeyActivated;
                 Window.Current.CoreWindow.PointerPressed -=
-                    this.CoreWindow_PointerPressed;
+                    CoreWindow_PointerPressed;
             };
         }
 
@@ -78,12 +78,12 @@
         {
             get
             {
-                return this.GetValue(DefaultViewModelProperty) as IObservableMap<String, Object>;
+                return GetValue(DefaultViewModelProperty) as IObservableMap<String, Object>;
             }
 
             set
             {
-                this.SetValue(DefaultViewModelProperty, value);
+                SetValue(DefaultViewModelProperty, value);
             }
         }
 
@@ -98,9 +98,9 @@
         protected virtual void GoHome(object sender, RoutedEventArgs e)
         {
             // Utilisez le cadre de navigation pour revenir à la page la plus en haut
-            if (this.Frame != null)
+            if (Frame != null)
             {
-                while (this.Frame.CanGoBack) this.Frame.GoBack();
+                while (Frame.CanGoBack) Frame.GoBack();
             }
         }
 
@@ -114,7 +114,7 @@
         protected virtual void GoBack(object sender, RoutedEventArgs e)
         {
             // Utilisez le cadre de navigation pour revenir à la page précédente
-            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
+            if (Frame != null && Frame.CanGoBack) Frame.GoBack();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@
         protected virtual void GoForward(object sender, RoutedEventArgs e)
         {
             // Utilise le frame de navigation pour atteindre la page suivante
-            if (this.Frame != null && this.Frame.CanGoForward) this.Frame.GoForward();
+            if (Frame != null && Frame.CanGoForward) Frame.GoForward();
         }
 
         /// <summary>
@@ -150,7 +150,7 @@
                 (int)virtualKey == 166 || (int)virtualKey == 167))
             {
                 var coreWindow = Window.Current.CoreWindow;
-                var downState = CoreVirtualKeyStates.Down;
+                const CoreVirtualKeyStates downState = CoreVirtualKeyStates.Down;
                 bool menuKey = (coreWindow.GetKeyState(VirtualKey.Menu) & downState) == downState;
                 bool controlKey = (coreWindow.GetKeyState(VirtualKey.Control) & downState) == downState;
                 bool shiftKey = (coreWindow.GetKeyState(VirtualKey.Shift) & downState) == downState;
@@ -162,14 +162,14 @@
                 {
                     // Lorsque la touche Précédent ou les touches Alt+Gauche sont actionnées, navigue vers l'arrière
                     args.Handled = true;
-                    this.GoBack(this, new RoutedEventArgs());
+                    GoBack(this, new RoutedEventArgs());
                 }
                 else if (((int)virtualKey == 167 && noModifiers) ||
                     (virtualKey == VirtualKey.Right && onlyAlt))
                 {
                     // Lorsque la touche Suivant ou les touches Alt+Droite sont actionnées, navigue vers l'avant
                     args.Handled = true;
-                    this.GoForward(this, new RoutedEventArgs());
+                    GoForward(this, new RoutedEventArgs());
                 }
             }
         }
@@ -196,8 +196,8 @@
             if (backPressed ^ forwardPressed)
             {
                 args.Handled = true;
-                if (backPressed) this.GoBack(this, new RoutedEventArgs());
-                if (forwardPressed) this.GoForward(this, new RoutedEventArgs());
+                if (backPressed) GoBack(this, new RoutedEventArgs());
+                if (forwardPressed) GoForward(this, new RoutedEventArgs());
             }
         }
 
@@ -226,13 +226,13 @@
         {
             var control = sender as Control;
             if (control == null) return;
-            if (this._layoutAwareControls == null)
+            if (_layoutAwareControls == null)
             {
                 // Commence à écouter les changements d'état d'affichage lorsque des contrôles demandent des mises à jour
-                Window.Current.SizeChanged += this.WindowSizeChanged;
-                this._layoutAwareControls = new List<Control>();
+                Window.Current.SizeChanged += WindowSizeChanged;
+                _layoutAwareControls = new List<Control>();
             }
-            this._layoutAwareControls.Add(control);
+            _layoutAwareControls.Add(control);
 
             // Définit l'état visuel initial du contrôle
             VisualStateManager.GoToState(control, DetermineVisualState(ApplicationView.Value), false);
@@ -240,7 +240,7 @@
 
         private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
         {
-            this.InvalidateVisualState();
+            InvalidateVisualState();
         }
 
         /// <summary>
@@ -257,13 +257,13 @@
         public void StopLayoutUpdates(object sender, RoutedEventArgs e)
         {
             var control = sender as Control;
-            if (control == null || this._layoutAwareControls == null) return;
-            this._layoutAwareControls.Remove(control);
-            if (this._layoutAwareControls.Count == 0)
+            if (control == null || _layoutAwareControls == null) return;
+            _layoutAwareControls.Remove(control);
+            if (_layoutAwareControls.Count == 0)
             {
                 // Arrête d'écouter les modifications de l'état d'affichage lorsque les contrôles ne demandent plus de mises à jour
-                this._layoutAwareControls = null;
-                Window.Current.SizeChanged -= this.WindowSizeChanged;
+                _layoutAwareControls = null;
+                Window.Current.SizeChanged -= WindowSizeChanged;
             }
         }
 
@@ -292,10 +292,10 @@
         /// </remarks>
         public void InvalidateVisualState()
         {
-            if (this._layoutAwareControls != null)
+            if (_layoutAwareControls != null)
             {
                 string visualState = DetermineVisualState(ApplicationView.Value);
-                foreach (var layoutAwareControl in this._layoutAwareControls)
+                foreach (var layoutAwareControl in _layoutAwareControls)
                 {
                     VisualStateManager.GoToState(layoutAwareControl, visualState, false);
                 }
@@ -316,31 +316,31 @@
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             // Le retour à une page mise en cache via la navigation ne devrait pas déclencher le chargement de l'état
-            if (this._pageKey != null) return;
+            if (_pageKey != null) return;
 
-            var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
-            this._pageKey = "Page-" + this.Frame.BackStackDepth;
+            var frameState = SuspensionManager.SessionStateForFrame(Frame);
+            _pageKey = "Page-" + Frame.BackStackDepth;
 
             if (e.NavigationMode == NavigationMode.New)
             {
                 // Efface l'état existant pour la navigation avant lors de l'ajout d'une nouvelle page à la
                 // pile de navigation
-                var nextPageKey = this._pageKey;
-                int nextPageIndex = this.Frame.BackStackDepth;
+                var nextPageKey = _pageKey;
+                int nextPageIndex = Frame.BackStackDepth;
                 while (frameState.Remove(nextPageKey))
                 {
                     nextPageIndex++;
                     nextPageKey = "Page-" + nextPageIndex;
                 }
                 // Passe le paramètre de navigation à la nouvelle page
-                this.LoadState(e.Parameter, null);
+                LoadState(e.Parameter, null);
             }
             else
             {
                 // Passe le paramètre de navigation et conserve l'état de page de la page, en utilisant
                 // la même stratégie pour charger l'état suspendu et recréer les pages supprimées
                 // du cache
-                this.LoadState(e.Parameter, (Dictionary<String, Object>)frameState[this._pageKey]);
+                LoadState(e.Parameter, (Dictionary<String, Object>)frameState[_pageKey]);
             }
         }
 
@@ -351,9 +351,9 @@
         /// fournit le groupe devant être affiché.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
+            var frameState = SuspensionManager.SessionStateForFrame(Frame);
             var pageState = new Dictionary<String, Object>();
-            this.SaveState(pageState);
+            SaveState(pageState);
             frameState[_pageKey] = pageState;
         }
 
@@ -386,24 +386,24 @@
         /// Implémentation de IObservableMap qui prend en charge la réentrance pour une utilisation en tant que modèle d'affichage
         /// par défaut.
         /// </summary>
-        private class ObservableDictionary<K, V> : IObservableMap<K, V>
+        private class ObservableDictionary<TK, TV> : IObservableMap<TK, TV>
         {
-            private class ObservableDictionaryChangedEventArgs : IMapChangedEventArgs<K>
+            private class ObservableDictionaryChangedEventArgs : IMapChangedEventArgs<TK>
             {
-                public ObservableDictionaryChangedEventArgs(CollectionChange change, K key)
+                public ObservableDictionaryChangedEventArgs(CollectionChange change, TK key)
                 {
-                    this.CollectionChange = change;
-                    this.Key = key;
+                    CollectionChange = change;
+                    Key = key;
                 }
 
                 public CollectionChange CollectionChange { get; private set; }
-                public K Key { get; private set; }
+                public TK Key { get; private set; }
             }
 
-            private Dictionary<K, V> _dictionary = new Dictionary<K, V>();
-            public event MapChangedEventHandler<K, V> MapChanged;
+            private readonly Dictionary<TK, TV> _dictionary = new Dictionary<TK, TV>();
+            public event MapChangedEventHandler<TK, TV> MapChanged;
 
-            private void InvokeMapChanged(CollectionChange change, K key)
+            private void InvokeMapChanged(CollectionChange change, TK key)
             {
                 var eventHandler = MapChanged;
                 if (eventHandler != null)
@@ -412,90 +412,90 @@
                 }
             }
 
-            public void Add(K key, V value)
+            public void Add(TK key, TV value)
             {
-                this._dictionary.Add(key, value);
-                this.InvokeMapChanged(CollectionChange.ItemInserted, key);
+                _dictionary.Add(key, value);
+                InvokeMapChanged(CollectionChange.ItemInserted, key);
             }
 
-            public void Add(KeyValuePair<K, V> item)
+            public void Add(KeyValuePair<TK, TV> item)
             {
-                this.Add(item.Key, item.Value);
+                Add(item.Key, item.Value);
             }
 
-            public bool Remove(K key)
+            public bool Remove(TK key)
             {
-                if (this._dictionary.Remove(key))
+                if (_dictionary.Remove(key))
                 {
-                    this.InvokeMapChanged(CollectionChange.ItemRemoved, key);
+                    InvokeMapChanged(CollectionChange.ItemRemoved, key);
                     return true;
                 }
                 return false;
             }
 
-            public bool Remove(KeyValuePair<K, V> item)
+            public bool Remove(KeyValuePair<TK, TV> item)
             {
-                V currentValue;
-                if (this._dictionary.TryGetValue(item.Key, out currentValue) &&
-                    Object.Equals(item.Value, currentValue) && this._dictionary.Remove(item.Key))
+                TV currentValue;
+                if (_dictionary.TryGetValue(item.Key, out currentValue) &&
+                    Equals(item.Value, currentValue) && _dictionary.Remove(item.Key))
                 {
-                    this.InvokeMapChanged(CollectionChange.ItemRemoved, item.Key);
+                    InvokeMapChanged(CollectionChange.ItemRemoved, item.Key);
                     return true;
                 }
                 return false;
             }
 
-            public V this[K key]
+            public TV this[TK key]
             {
                 get
                 {
-                    return this._dictionary[key];
+                    return _dictionary[key];
                 }
                 set
                 {
-                    this._dictionary[key] = value;
-                    this.InvokeMapChanged(CollectionChange.ItemChanged, key);
+                    _dictionary[key] = value;
+                    InvokeMapChanged(CollectionChange.ItemChanged, key);
                 }
             }
 
             public void Clear()
             {
-                var priorKeys = this._dictionary.Keys.ToArray();
-                this._dictionary.Clear();
+                var priorKeys = _dictionary.Keys.ToArray();
+                _dictionary.Clear();
                 foreach (var key in priorKeys)
                 {
-                    this.InvokeMapChanged(CollectionChange.ItemRemoved, key);
+                    InvokeMapChanged(CollectionChange.ItemRemoved, key);
                 }
             }
 
-            public ICollection<K> Keys
+            public ICollection<TK> Keys
             {
-                get { return this._dictionary.Keys; }
+                get { return _dictionary.Keys; }
             }
 
-            public bool ContainsKey(K key)
+            public bool ContainsKey(TK key)
             {
-                return this._dictionary.ContainsKey(key);
+                return _dictionary.ContainsKey(key);
             }
 
-            public bool TryGetValue(K key, out V value)
+            public bool TryGetValue(TK key, out TV value)
             {
-                return this._dictionary.TryGetValue(key, out value);
+                return _dictionary.TryGetValue(key, out value);
             }
 
-            public ICollection<V> Values
+            public ICollection<TV> Values
             {
-                get { return this._dictionary.Values; }
+                get { return _dictionary.Values; }
             }
 
-            public bool Contains(KeyValuePair<K, V> item)
+            public bool Contains(KeyValuePair<TK, TV> item)
             {
-                return this._dictionary.Contains(item);
+                return _dictionary.Contains(item);
             }
 
             public int Count
             {
-                get { return this._dictionary.Count; }
+                get { return _dictionary.Count; }
             }
 
             public bool IsReadOnly
@@ -503,20 +503,20 @@
                 get { return false; }
             }
 
-            public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+            public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
             {
-                return this._dictionary.GetEnumerator();
+                return _dictionary.GetEnumerator();
             }
 
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
-                return this._dictionary.GetEnumerator();
+                return _dictionary.GetEnumerator();
             }
 
-            public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+            public void CopyTo(KeyValuePair<TK, TV>[] array, int arrayIndex)
             {
                 int arraySize = array.Length;
-                foreach (var pair in this._dictionary)
+                foreach (var pair in _dictionary)
                 {
                     if (arrayIndex >= arraySize) break;
                     array[arrayIndex++] = pair;

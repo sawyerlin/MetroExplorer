@@ -110,6 +110,7 @@
     <Compile Include="Objects\GroupInfoList.cs" />
     <Compile Include="Objects\Enums.cs" />
     <Compile Include="Objects\ExplorerItem.cs" />
+    <Compile Include="Objects\HomeItem.cs" />
     <Compile Include="Objects\Levenshtein.cs" />
     <Compile Include="Objects\MetroExplorerLocalDataSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

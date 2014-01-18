@@ -13,7 +13,6 @@
     public class MetroExplorerLocalDataSource
     {
         private IList<StorageFolder> _navigatorStorageFolders;
-        private IReadOnlyList<IStorageItem> _shareStorageItems;
 
         public IList<StorageFolder> NavigatorStorageFolders
         {
@@ -24,14 +23,7 @@
             }
         }
 
-        public IReadOnlyList<IStorageItem> ShareStorageItems
-        {
-            get
-            {
-                return _shareStorageItems;
-            }
-            set { _shareStorageItems = value; }
-        }
+        public IReadOnlyList<IStorageItem> ShareStorageItems { get; set; }
 
         public StorageFolder CurrentStorageFolder
         {
@@ -49,7 +41,7 @@
         private MetroExplorerLocalDataSource()
         {
             _navigatorStorageFolders = new List<StorageFolder>();
-            _shareStorageItems = new List<IStorageItem>();
+            ShareStorageItems = new List<IStorageItem>();
         }
 
         public string GetPath()
@@ -76,7 +68,7 @@
             if (_navigatorStorageFolders.Count > 1)
             {
                 _navigatorStorageFolders = _navigatorStorageFolders
-                    .Take(_navigatorStorageFolders.Count - 1).ToList<StorageFolder>();
+                    .Take(_navigatorStorageFolders.Count - 1).ToList();
             }
         }
     }

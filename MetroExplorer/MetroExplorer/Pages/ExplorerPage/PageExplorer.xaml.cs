@@ -63,9 +63,9 @@
             else
                 BigSquareMode = true;
             if (BigSquareMode)
-                itemGridView.ItemTemplate = Resources["Standard300x180ItemTemplate"] as DataTemplate;
+                ItemGridView.ItemTemplate = Resources["Standard300x180ItemTemplate"] as DataTemplate;
             else
-                itemGridView.ItemTemplate = Resources["Standard300x80ItemTemplate"] as DataTemplate;
+                ItemGridView.ItemTemplate = Resources["Standard300x80ItemTemplate"] as DataTemplate;
         }
 
         protected async override void LoadState(
@@ -107,8 +107,8 @@
                 }
                 ExplorerItems.Clear();
                 ExplorerItems = null;
-                itemGridView.ItemsSource = null;
-                itemListView.ItemsSource = null;
+                ItemGridView.ItemsSource = null;
+                ItemListView.ItemsSource = null;
             }
             DataTransferManager.GetForCurrentView().DataRequested -= PageExplorerDataRequested;
             GC.Collect();
@@ -186,7 +186,7 @@
 
         private void ButtonLinkClick(object sender, RoutedEventArgs e)
         {
-            itemGridView.SelectionChanged -= ItemGridViewSelectionChanged;
+            ItemGridView.SelectionChanged -= ItemGridViewSelectionChanged;
             Frame.Navigate(typeof(PageMap));
         }
 

@@ -5,23 +5,16 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using Windows.ApplicationModel.Search;
-    using Windows.Storage;
-    using Windows.Storage.AccessCache;
-    using Windows.UI.Xaml;
     using Windows.UI.Xaml.Input;
     using Bing.Maps.Search;
     using Bing.Maps;
-    using Core;
-    using Common;
     using Components.Maps;
-    using Components.Maps.Objects;
     using DataSource;
     using DataSource.DataConfigurations;
     using DataSource.DataModels;
-    using ExplorerPage;
     using Windows.Foundation;
 
-    public sealed partial class PageMap : LayoutAwarePage
+    public sealed partial class PageMap 
     {
         #region Fields
 
@@ -32,16 +25,13 @@
 
         // Datas
         private MapModel _map;
-        private ObservableCollection<MapLocationModel> _mapLocations;
-        private ObservableCollection<MapLocationFolderModel> _mapLocationFolders;
+        private readonly ObservableCollection<MapLocationFolderModel> _mapLocationFolders;
 
         // Accessors
         private readonly DataAccess<MapModel> _mapDataAccess;
         private readonly DataAccess<MapLocationModel> _mapLocationAccess;
-        private readonly DataAccess<MapLocationFolderModel> _mapLocationFolderAccess;
 
         // MapPins
-        private readonly ObservableCollection<MapPin> _mapPins;
         private MapPin _focusedMapPin;
         private readonly MapPin _lastFocusedMapPin;
 
@@ -51,9 +41,10 @@
 
         #region Constructors
 
-        public PageMap(MapPin lastFocusedMapPin)
+        public PageMap()
         {
-            _lastFocusedMapPin = lastFocusedMapPin;
+            _lastFocusedMapPin = null;
+            _mapLocationFolders = new ObservableCollection<MapLocationFolderModel>();
             InitializeComponent();
 
             _searchPane = SearchPane.GetForCurrentView();
@@ -63,9 +54,6 @@
 
             _mapDataAccess = new DataAccess<MapModel>();
             _mapLocationAccess = new DataAccess<MapLocationModel>();
-            _mapLocationFolderAccess = new DataAccess<MapLocationFolderModel>();
-
-            _mapPins = new ObservableCollection<MapPin>();
 
 
             MapView.AllowDrop = true;
@@ -82,7 +70,6 @@
             ObservableCollection<MapModel> maps = await _mapDataAccess.GetSources(DataSourceType.Sqlite);
             _map = maps.First();
             _mapLocationAccess.MapId = _map.ID;
-            _mapLocations = await _mapLocationAccess.GetSources(DataSourceType.Sqlite);
 
             DefaultViewModel["Focused"] = false;
             DefaultViewModel["Linkable"] = false;
@@ -91,7 +78,7 @@
             DefaultViewModel["FolderSelected"] = false;
             DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
 
-            SetLocations(_mapLocations);
+            SetLocations();
 
             MapView.ViewChangeEnded += MapViewViewChangeEnded;
 
@@ -173,56 +160,7 @@
                 _focusedMapPin.Focus();
         }
 
-        private async void MapPinElementMapPinTapped(object sender,
-            MapPinTappedEventArgs e)
-        {
-            //MapPin mapPinElement = (MapPin)sender;
-
-            //if (mapPinElement.Focused)
-            //{
-            //    if (e.Marked)
-            //    {
-            //        await _mapLocationAccess.Add(
-            //            DataSourceType.Sqlite,
-            //            new MapLocationModel
-            //        {
-            //            Id = Guid.NewGuid(),
-            //            Name = mapPinElement.Name,
-            //            Description = mapPinElement.Description,
-            //            Latitude = mapPinElement.Latitude,
-            //            Longitude = mapPinElement.Longitude,
-            //            MapId = _map.ID
-            //        });
-
-            //        MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
-            //            location.Latitude == mapPinElement.Latitude.ToString());
-            //        if (addedLocation != null)
-            //            mapPinElement.Id = addedLocation.Id;
-
-            //        _mapPins.Add(mapPinElement);
-            //    }
-            //    else
-            //    {
-            //        MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-            //            location.Id.Equals(mapPinElement.Id));
-            //        if (deleteLocation != null)
-            //            await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
-
-            //        _mapPins.Remove(mapPinElement);
-            //    }
-            //}
-
-            //_lastFocusedMapPin = _focusedMapPin;
-            //_focusedMapPin = mapPinElement;
-
-            //if (_lastFocusedMapPin != null)
-            //    _lastFocusedMapPin.UnFocus();
-
-            //if (!_focusedMapPin.Focused)
-            //    _focusedMapPin.Focus();
-        }
-
-        private void SetLocations(IEnumerable<MapLocationModel> locations)
+        private void SetLocations()
         {
 
             //foreach (MapLocationModel mapLocation in locations)
@@ -243,163 +181,6 @@
 
             //MapView.ViewChanged += MapViewViewChanged;
 
-        }
-
-        private void MapViewViewChanged(object sender,
-            ViewChangedEventArgs e)
-        {
-            //foreach (MapPin mapPin in _mapPins)
-            //{
-            //    if (DataSource.FocusedLocationId != null && DataSource.FocusedLocationId.Value.Equals(mapPin.Id))
-            //    {
-            //        _focusedMapPin = mapPin;
-            //        UpdateMapFolderList(DataSource.FocusedLocationId.Value);
-            //        //DataSource.SelectedStorageFolders = new List<StorageFolder>();
-
-            //        mapPin.Focus();
-            //        DefaultViewModel["Focused"] = true;
-            //        DataSource.FocusedLocationId = null;
-            //    }
-            //    mapPin.Mark();
-            //}
-
-            //MapView.ViewChanged -= MapViewViewChanged;
-        }
-
-        private async void UpdateMapFolderList(Guid mapLocationId)
-        {
-            _mapLocationFolderAccess.MapLocationId = mapLocationId;
-            _mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
-            DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
-
-            List<MapLocationFolderModel> removedFoders = new List<MapLocationFolderModel>();
-            foreach (MapLocationFolderModel removedFolder in _mapLocationFolders)
-            {
-                StorageFolder folder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(removedFolder.Token, AccessCacheOptions.FastLocationsOnly);
-                if (folder == null || !DataSource.SelectedStorageFolders.Any(storageFolder => storageFolder.EqualTo(folder)))
-                    removedFoders.Add(removedFolder);
-            }
-
-            await _mapLocationFolderAccess.RemoveMany(DataSourceType.Sqlite, removedFoders);
-
-            foreach (StorageFolder folder in DataSource.SelectedStorageFolders)
-            {
-                string token = StorageApplicationPermissions.FutureAccessList.Add(folder, "link");
-                if (!_mapLocationFolders.Any(locationFolder => locationFolder.Token.Equals(token)))
-                {
-                    MapLocationFolderModel locationFolder = new MapLocationFolderModel
-                    {
-                        ID = Guid.NewGuid(),
-                        Name = folder.Name,
-                        Description = folder.DateCreated.ToString(),
-                        MapLocationId = mapLocationId,
-                        Token = token
-                    };
-                    await _mapLocationFolderAccess.Add(DataSourceType.Sqlite, locationFolder);
-                }
-            }
-        }
-
-        private async void ButtonLinkExplorerClick(object sender, RoutedEventArgs e)
-        {
-            //DataSource.SelectedStorageFolders = new List<StorageFolder>();
-
-            //// ToDo: DataSource.SelectedStorageFolders
-            //foreach (MapLocationFolderModel folder in _mapLocationFolders)
-            //{
-            //    StorageFolder storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(folder.Token, AccessCacheOptions.FastLocationsOnly);
-            //    if (storageFolder != null)
-            //        DataSource.SelectedStorageFolders.Add(storageFolder);
-            //}
-
-            //DataSource.FocusedLocationId = _focusedMapPin.Id;
-            //Frame.Navigate(typeof(PageMain));
-        }
-
-        private async void ButtonLinkClick(object sender, RoutedEventArgs e)
-        {
-            //FolderPicker folderPicker = new FolderPicker
-            //{
-            //    ViewMode = PickerViewMode.List,
-            //    SuggestedStartLocation = PickerLocationId.Desktop
-            //};
-            //folderPicker.FileTypeFilter.Add("*");
-            //StorageFolder storageFolder = await folderPicker.PickSingleFolderAsync();
-
-            //if (storageFolder == null) return;
-
-            //string token = StorageApplicationPermissions.FutureAccessList.Add(storageFolder, "link");
-
-            //if (!_mapLocationFolders.Any(folder => folder.Token.Equals(token)))
-            //{
-            //    await _mapLocationFolderAccess.Add(DataSourceType.Sqlite, new MapLocationFolderModel
-            //        {
-            //            ID = Guid.NewGuid(),
-            //            Name = storageFolder.Name,
-            //            Description = storageFolder.DateCreated.ToString(),
-            //            MapLocationId = _focusedMapPin.Id,
-            //            Token = token
-            //        });
-
-            //    _mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
-            //    DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
-            //    DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            //    DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            //    DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
-            //}
-        }
-
-        private void ButtonShowClick(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(PageExplorer));
-        }
-
-        private void ButtonDeleteClick(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private async void ButtonMarkClick(object sender, RoutedEventArgs e)
-        {
-            //await _mapLocationAccess.Add(
-            //            DataSourceType.Sqlite,
-            //            new MapLocationModel(_focusedMapPin.LocationModel.Name, ))
-            //            new MapLocationModel
-            //            {
-            //                Id = Guid.NewGuid(),
-            //                Name = _focusedMapPin.Name,
-            //                Description = _focusedMapPin.Description,
-            //                Latitude = _focusedMapPin.Latitude,
-            //                Longitude = _focusedMapPin.Longitude,
-            //                MapId = _map.ID
-            //            });
-
-            //MapLocationModel addedLocation = _mapLocations.FirstOrDefault(location =>
-            //    location.Latitude == _focusedMapPin.Latitude.ToString());
-            //if (addedLocation != null)
-            //    _focusedMapPin.Id = addedLocation.Id;
-
-            //_mapPins.Add(_focusedMapPin);
-            //_focusedMapPin.Mark();
-            //if (addedLocation != null) _mapLocationFolderAccess.MapLocationId = addedLocation.Id;
-            //_mapLocationFolders = await _mapLocationFolderAccess.GetSources(DataSourceType.Sqlite);
-            //DefaultViewModel["MapLocationFolders"] = _mapLocationFolders;
-            //DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            //DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
-        }
-
-        private async void ButtonUnMarkClick(object sender, RoutedEventArgs e)
-        {
-            //MapLocationModel deleteLocation = _mapLocations.FirstOrDefault(location =>
-            //            location.Id.Equals(_focusedMapPin.Id));
-            //if (deleteLocation != null)
-            //    await _mapLocationAccess.Remove(DataSourceType.Sqlite, deleteLocation);
-
-            //_mapPins.Remove(_focusedMapPin);
-            //_focusedMapPin.UnMark();
-            //DefaultViewModel["Linkable"] = (bool)DefaultViewModel["Focused"] && _focusedMapPin.Marked;
-            //DefaultViewModel["Markable"] = (bool)DefaultViewModel["Focused"] && !(bool)DefaultViewModel["Linkable"];
-            //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
         }
 
         #endregion

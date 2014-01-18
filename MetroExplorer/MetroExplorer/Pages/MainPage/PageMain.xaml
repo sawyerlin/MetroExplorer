@@ -1,5 +1,5 @@
 ﻿<common:LayoutAwarePage
-	x:Name="pageRoot"
+	x:Name="PageRoot"
 	x:Class="MetroExplorer.Pages.MainPage.PageMain"
 	DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -13,9 +13,9 @@
 	<common:LayoutAwarePage.BottomAppBar>
 		<AppBar x:Name="AppBarBottomAppBar" Opened="AppBarBottomAppBarOpened"
 				Background="{Binding Path=BottomBarBackground}" BorderBrush="{Binding Path=BottomBarBackground}">
-			<Grid Height="90" x:Name="GridBottomAppBar" HorizontalAlignment="Stretch">
+			<Grid Height="90" HorizontalAlignment="Stretch">
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-					<Button x:Name="Button_RemoveDiskFolder" Click="ButtonRemoveDiskFolderClick"
+					<Button x:Name="ButtonRemoveDiskFolder" Click="ButtonRemoveDiskFolderClick"
 						x:Uid="Uid_Page_Main_Button_RemoveFolder" FontWeight="ExtraLight"
 						Margin="10,0,0,0" HorizontalAlignment="Left">
 						<Button.Style>
@@ -386,13 +386,13 @@
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<Button x:Name="backButton" Opacity="0" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
+					<Button x:Name="backButton" Opacity="0" IsEnabled="{Binding Frame.CanGoBack, ElementName=PageRoot}" Style="{StaticResource BackButtonStyle}"/>
 					<TextBlock Text="{StaticResource AppName}" Grid.Column="1" x:Uid="Uid_PageMain_PageTitle" Style="{StaticResource PageHeaderTextStyle}"
 						   Foreground="{Binding Path=TitleForeground}"/>
 				</Grid>
 			</Grid>
 
-			<Grid Grid.Row="1" x:Name="GridContent">
+			<Grid Grid.Row="1">
 				<GridView
 				x:Name="GridViewItem"
 				AutomationProperties.AutomationId="ItemGridView"

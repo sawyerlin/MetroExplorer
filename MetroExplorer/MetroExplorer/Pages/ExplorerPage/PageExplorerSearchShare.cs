@@ -80,7 +80,7 @@
             {
                 List<IStorageItem> files = new List<IStorageItem>();
                 int index = 0;
-                foreach (var item in itemGridView.SelectedItems)
+                foreach (var item in ItemGridView.SelectedItems)
                 {
                     ExplorerItem explorerItem = (ExplorerItem)item;
                     if (explorerItem != null)

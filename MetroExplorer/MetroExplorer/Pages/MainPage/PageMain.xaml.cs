@@ -17,14 +17,13 @@
     using Windows.Storage.AccessCache;
     using Windows.Storage.FileProperties;
     using Windows.Storage.Pickers;
-    using Common;
     using Core;
     using Core.Objects;
     using Core.Utils;
     using ExplorerPage;
     using MapPage;
 
-    public sealed partial class PageMain : LayoutAwarePage, INotifyPropertyChanged
+    public sealed partial class PageMain
     {
         private readonly Dictionary<HomeItem, string> _dicItemToken;
         private DispatcherTimer _folderImageChangeDispatcher;
@@ -95,11 +94,10 @@
             await InitializeUsersFolders();
 
             groupedItemsViewSource.Source = ExplorerGroups;
-            BottomAppBar.IsOpen = true;
-            
+            if (BottomAppBar != null) BottomAppBar.IsOpen = true;
 
-            _folderImageChangeDispatcher = new DispatcherTimer();
-            _folderImageChangeDispatcher.Interval = new TimeSpan(0, 0, 0, 1, 500);
+
+            _folderImageChangeDispatcher = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 1, 500)};
             _folderImageChangeDispatcher.Tick += FolderImageChangeDispatcherTick;
             _folderImageChangeDispatcher.Start();
             LoadingProgressBar.Visibility = Visibility.Collapsed;
@@ -130,7 +128,7 @@
                     {
                         var retrievedItem = await StorageApplicationPermissions.FutureAccessList.GetItemAsync(item.Token);
                         StorageFolder retrievedFolder = retrievedItem as StorageFolder;
-                        if (retrievedFolder.Name.Contains(":\\") || retrievedFolder.Name == "Documents")
+                        if (retrievedFolder != null && (retrievedFolder.Name.Contains(":\\") || retrievedFolder.Name == "Documents"))
                         {
                             AddNewItem(ExplorerGroups[0], retrievedFolder, item.Token);
                         }
@@ -162,9 +160,10 @@
                 if (files.Any(p => p.IsMediaFile()))
                 {
                     var files2 = files.Where(p => p.IsMediaFile() && p.Name != folderItem.SubImageName);
-                    if (files2 != null && files2.Count() > 0)
+                    var storageFiles = files2 as StorageFile[] ?? files2.ToArray();
+                    if (files2 != null && storageFiles.Any())
                     {
-                        var file = files2.First();
+                        var file = storageFiles.First();
                         StorageItemThumbnail fileThumbnail = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 280);
                         BitmapImage bitmapImage = new BitmapImage();
                         bitmapImage.SetSource(fileThumbnail);
@@ -177,7 +176,7 @@
 
         private HomeItem AddNewItem(GroupInfoList<HomeItem> itemList, StorageFolder retrievedFolder, string token)
         {
-            HomeItem item = new HomeItem()
+            HomeItem item = new HomeItem
             {
                 Name = retrievedFolder.Name,
                 Path = retrievedFolder.Path,
@@ -207,7 +206,7 @@
 
         private void InitializeSystemFolders()
         {
-            ExplorerGroups[0].Add(new HomeItem()
+            ExplorerGroups[0].Add(new HomeItem
             {
                 Name = KnownFolders.PicturesLibrary.Name,
                 Path = KnownFolders.PicturesLibrary.Path,
@@ -216,7 +215,7 @@
                 ImageStretch = "None",
                 IfImageChanged = "Collapsed"
             });
-            ExplorerGroups[0].Add(new HomeItem()
+            ExplorerGroups[0].Add(new HomeItem
             {
                 Name = KnownFolders.MusicLibrary.Name,
                 Path = KnownFolders.MusicLibrary.Path,
@@ -225,7 +224,7 @@
                 ImageStretch = "None",
                 IfImageChanged = "Collapsed"
             });
-            ExplorerGroups[0].Add(new HomeItem()
+            ExplorerGroups[0].Add(new HomeItem
             {
                 Name = KnownFolders.VideosLibrary.Name,
                 Path = KnownFolders.VideosLibrary.Path,
@@ -234,7 +233,7 @@
                 ImageStretch = "None",
                 IfImageChanged = "Collapsed"
             });
-            ExplorerGroups[0].Add(new HomeItem()
+            ExplorerGroups[0].Add(new HomeItem
             {
                 Name = StringResources.ResourceLoader.GetString("String_MapButton"),
                 Path = "Map",
@@ -262,10 +261,9 @@
                 EventLogger.OnActionEvent(EventLogger.AddFolderCancel, EventLogger.LabelHomePage);
                 return;
             }
-            foreach (var key in _dicItemToken.Keys)
+            if (_dicItemToken.Keys.Any(key => key.Path == storageFolder.Path))
             {
-                if (key.Path == storageFolder.Path)
-                    return;
+                return;
             }
             AddNewFolder2(storageFolder);
             EventLogger.OnActionEvent(EventLogger.AddFolderDone, EventLogger.LabelHomePage);
@@ -273,12 +271,11 @@
 
         private async void AddNewFolder2(StorageFolder storageFolder)
         {
-            foreach (var item in _dicItemToken)
+            if (_dicItemToken.Any(item => item.Key.StorageFolder == storageFolder))
             {
-                if (item.Key.StorageFolder == storageFolder)
-                    return;
+                return;
             }
-            string token = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(storageFolder, storageFolder.Name);
+            string token = StorageApplicationPermissions.FutureAccessList.Add(storageFolder, storageFolder.Name);
             if (storageFolder.Name.Contains(":\\") || storageFolder.Name == "Documents")
             {
                 AddNewItem(ExplorerGroups[0], storageFolder, token);
@@ -292,9 +289,11 @@
 
         private static async Task<StorageFolder> GetStorageFolderFromFolderPicker()
         {
-            FolderPicker folderPicker = new FolderPicker();
-            folderPicker.ViewMode = PickerViewMode.List;
-            folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+            FolderPicker folderPicker = new FolderPicker
+            {
+                ViewMode = PickerViewMode.List,
+                SuggestedStartLocation = PickerLocationId.Desktop
+            };
             folderPicker.FileTypeFilter.Add("*");
             StorageFolder storageFolder = await folderPicker.PickSingleFolderAsync();
             return storageFolder;
@@ -302,7 +301,7 @@
 
         private async void ButtonAddNewDiskFolderClick(object sender, RoutedEventArgs e)
         {
-            if (_currentVisualState != null && _currentVisualState.Name != null && _currentVisualState.Name.ToString() == "Snapped") return;
+            if (_currentVisualState != null && _currentVisualState.Name == "Snapped") return;
             EventLogger.OnActionEvent(EventLogger.AddFolderClick, EventLogger.LabelHomePage);
             await AddNewFolder();
         }
@@ -341,7 +340,7 @@
                 }
                 catch { }
             }
-            BottomAppBar.IsOpen = false;
+            if (BottomAppBar != null) BottomAppBar.IsOpen = false;
         }
 
         private void NotifyPropertyChanged(String changedPropertyName)
@@ -357,14 +356,14 @@
         private async void GridViewItemItemClick(object sender, ItemClickEventArgs e)
         {
             HomeItem item = e.ClickedItem as HomeItem;
-            if (item.StorageFolder != null)
+            if (item != null && item.StorageFolder != null)
             {
                 NavigateToExplorer(item);
             }
             else
             {
                 if (_currentVisualState != null && _currentVisualState.Name != null && _currentVisualState.Name.ToString() == "Snapped") return;
-                if (item.Path == StringResources.ResourceLoader.GetString("String_NewFolder") && item.Name == StringResources.ResourceLoader.GetString("String_NewFolder"))
+                if (item != null && (item.Path == StringResources.ResourceLoader.GetString("String_NewFolder") && item.Name == StringResources.ResourceLoader.GetString("String_NewFolder")))
                 {
                     // TODO: 添加新快捷方式文件夹
                     await AddNewFolder();
@@ -409,15 +408,7 @@
 
         private void AppBarBottomAppBarOpened(object sender, object e)
         {
-            if (GridViewItem.SelectedItems.Count > 0)
-                Button_RemoveDiskFolder.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            else
-                Button_RemoveDiskFolder.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-        }
-
-        private void ExplorerItemImage_Loaded(object sender, RoutedEventArgs e)
-        {
-
+            ButtonRemoveDiskFolder.Visibility = GridViewItem.SelectedItems.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ButtonRefreshClick(object sender, RoutedEventArgs e)
@@ -438,7 +429,7 @@
                     {
                         var retrievedItem = await StorageApplicationPermissions.FutureAccessList.GetItemAsync(item.Token);
                         StorageFolder retrievedFolder = retrievedItem as StorageFolder;
-                        if (!(retrievedFolder.Name.Contains(":\\") || retrievedFolder.Name == "Documents"))
+                        if (retrievedFolder != null && !(retrievedFolder.Name.Contains(":\\") || retrievedFolder.Name == "Documents"))
                             availableStorages.Add(retrievedFolder, item);
                     }
                     catch  // 出现异常。可能是因为用户修改了某个文件夹的信息
@@ -480,7 +471,7 @@
         {
             if (ExplorerGroups[1].All(p => p.Path != StringResources.ResourceLoader.GetString("String_AddNewShortCutFolder")))
             {
-                ExplorerGroups[1].Insert(0, new HomeItem()
+                ExplorerGroups[1].Insert(0, new HomeItem
                 {
                     Name = StringResources.ResourceLoader.GetString("String_AddNewShortCutFolder"),
                     Path = StringResources.ResourceLoader.GetString("String_AddNewShortCutFolder"),

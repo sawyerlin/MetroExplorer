@@ -22,9 +22,9 @@
         private void PageExplorerCopyButtonClick(object sender, RoutedEventArgs e)
         {
             CopiedCuttedItems.GetInstance().Items.Clear();
-            if (itemGridView.SelectedItems != null && itemGridView.SelectedItems.Count > 0)
+            if (ItemGridView.SelectedItems != null && ItemGridView.SelectedItems.Count > 0)
             {
-                foreach (var item in itemGridView.SelectedItems)
+                foreach (var item in ItemGridView.SelectedItems)
                 {
                     CopiedCuttedItems.GetInstance().Items.Add((item as ExplorerItem));
                 }
@@ -35,9 +35,9 @@
         private void PageExplorerCutButtonClick(object sender, RoutedEventArgs e)
         {
             CopiedCuttedItems.GetInstance().Items.Clear();
-            if (itemGridView.SelectedItems != null && itemGridView.SelectedItems.Count > 0)
+            if (ItemGridView.SelectedItems != null && ItemGridView.SelectedItems.Count > 0)
             {
-                foreach (var item in itemGridView.SelectedItems)
+                foreach (var item in ItemGridView.SelectedItems)
                 {
                     CopiedCuttedItems.GetInstance().Items.Add((item as ExplorerItem));
                 }

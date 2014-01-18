@@ -1,37 +1,23 @@
-﻿using MetroExplorer.Pages.GalleryPage;
-
-namespace MetroExplorer.Pages.ExplorerPage
+﻿namespace MetroExplorer.Pages.ExplorerPage
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
-    using System.Threading.Tasks;
-    using Windows.ApplicationModel.Resources;
     using Windows.Storage;
-    using Windows.Storage.FileProperties;
-    using Windows.Storage.Pickers;
-    using Windows.System;
     using Windows.UI.Popups;
     using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
-    using Windows.UI.Xaml.Input;
-    using Windows.UI.Xaml.Media.Imaging;
     using Core;
     using Core.Objects;
-    using Core.Utils;
     using UserPreferenceRecord;
     using MainPage;
-    using Windows.Storage.Streams;
     using Windows.UI.StartScreen;
     using Windows.Foundation;
-    using Windows.UI.Xaml.Media;
-
+    using GalleryPage;
     public sealed partial class PageExplorer
     {
         private void Button_PlayFolder_Click(object sender, RoutedEventArgs e)
         {
-            PhotoGallery.ActualScreenHeight = this.ActualHeight;
+            PhotoGallery.ActualScreenHeight = ActualHeight;
             if (ExplorerItems != null)
                 Frame.Navigate(typeof(PhotoGallery), ExplorerItems.ToList());
         }
@@ -74,27 +60,30 @@ namespace MetroExplorer.Pages.ExplorerPage
         private async void Button_RemoveDiskFolder_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog confrimMsg = new MessageDialog(StringResources.ResourceLoader.GetString("RemoveFolderConfirmationContentString"), StringResources.ResourceLoader.GetString("RemoveFolderConfirmationTitleString"));
-            confrimMsg.Commands.Add(new UICommand(StringResources.ResourceLoader.GetString("RemoveFolderConfirmationYesButtonString"), async (UICommandInvokedHandler) =>
+            confrimMsg.Commands.Add(new UICommand(StringResources.ResourceLoader.GetString("RemoveFolderConfirmationYesButtonString"), async uiCommandInvokedHandler =>
             {
                 MessageDialog msg = null;
                 try
                 {
-                    if (itemGridView.SelectedItems == null || itemGridView.SelectedItems.Count == 0) return;
-                    while (itemGridView.SelectedItems.Count > 0)
+                    if (ItemGridView.SelectedItems == null || ItemGridView.SelectedItems.Count == 0) return;
+                    while (ItemGridView.SelectedItems.Count > 0)
                     {
-                        if (ExplorerItems.Contains(itemGridView.SelectedItems[0] as ExplorerItem) && (itemGridView.SelectedItems[0] as ExplorerItem).StorageFolder != null)
+                        var explorerItem = ItemGridView.SelectedItems[0] as ExplorerItem;
+                        if (explorerItem != null && (ExplorerItems.Contains(explorerItem) && explorerItem.StorageFolder != null))
                         {
-                            await (itemGridView.SelectedItems[0] as ExplorerItem).StorageFolder.DeleteAsync();
-                            ExplorerItems.Remove(itemGridView.SelectedItems[0] as ExplorerItem);
+                            await (ItemGridView.SelectedItems[0] as ExplorerItem).StorageFolder.DeleteAsync();
+                            ExplorerItems.Remove(ItemGridView.SelectedItems[0] as ExplorerItem);
                         }
-                        else if (ExplorerItems.Contains(itemGridView.SelectedItems[0] as ExplorerItem))
+                        else if (ExplorerItems.Contains(ItemGridView.SelectedItems[0] as ExplorerItem))
                         {
-                            await (itemGridView.SelectedItems[0] as ExplorerItem).StorageFile.DeleteAsync();
-                            ExplorerItems.Remove(itemGridView.SelectedItems[0] as ExplorerItem);
+                            var item = ItemGridView.SelectedItems[0] as ExplorerItem;
+                            if (item != null)
+                                await item.StorageFile.DeleteAsync();
+                            ExplorerItems.Remove(ItemGridView.SelectedItems[0] as ExplorerItem);
                         }
                     }
                     await InitializeNavigator();
-                    BottomAppBar.IsOpen = false;
+                    if (BottomAppBar != null) BottomAppBar.IsOpen = false;
                 }
                 catch (Exception exp)
                 {
@@ -110,17 +99,15 @@ namespace MetroExplorer.Pages.ExplorerPage
 
         private void AppBar_BottomAppBar_Opened_1(object sender, object e)
         {
-            Button_RenameDiskFolder.Visibility = itemGridView.SelectedItems.Count == 1 ? Visibility.Visible : Visibility.Collapsed;
-            Button_RemoveDiskFolder.Visibility = itemGridView.SelectedItems.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            Button_RenameDiskFolder.Visibility = ItemGridView.SelectedItems.Count == 1 ? Visibility.Visible : Visibility.Collapsed;
+            Button_RemoveDiskFolder.Visibility = ItemGridView.SelectedItems.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void Button_Refresh_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(PageExplorer), null);
         }
-
     }
-
 
     /// <summary>
     /// Add New Folder
@@ -130,17 +117,16 @@ namespace MetroExplorer.Pages.ExplorerPage
         private void Button_AddNewFolder_Click(object sender, RoutedEventArgs e)
         {
             Popup_CreateNewFolder.IsOpen = true;
-            Popup_CreateNewFolder.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            Popup_CreateNewFolder.Visibility = Visibility.Visible;
             Popup_CreateNewFolder.Margin = new Thickness(0, 0, 920, 237);
-            TextBox_CreateNewFolder.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+            TextBox_CreateNewFolder.Focus(FocusState.Keyboard);
             TextBox_CreateNewFolder.SelectAll();
         }
 
         private async void Button_CreateNewFolder_Click(object sender, RoutedEventArgs e)
         {
-            //StorageFolder sf = await _currentStorageFolder.CreateFolderAsync(StringResources.ResourceLoader.GetString("String_NewFolder"), CreationCollisionOption.GenerateUniqueName);
             StorageFolder sf = await DataSource.CurrentStorageFolder.CreateFolderAsync(TextBox_CreateNewFolder.Text, CreationCollisionOption.GenerateUniqueName);
-            ExplorerItem item = new ExplorerItem()
+            ExplorerItem item = new ExplorerItem
             {
                 Name = sf.Name,
                 Path = sf.Path,
@@ -148,10 +134,10 @@ namespace MetroExplorer.Pages.ExplorerPage
                 StorageFolder = sf
             };
             ExplorerItems.Insert(0, item);
-            itemGridView.SelectedItem = item;
+            ItemGridView.SelectedItem = item;
             Popup_CreateNewFolder.IsOpen = false;
-            Popup_CreateNewFolder.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            BottomAppBar.IsOpen = false;
+            Popup_CreateNewFolder.Visibility = Visibility.Collapsed;
+            if (BottomAppBar != null) BottomAppBar.IsOpen = false;
             await InitializeNavigator();
         }
     }
@@ -164,30 +150,33 @@ namespace MetroExplorer.Pages.ExplorerPage
     {
         private void RenameDiskFolderButtonClick(object sender, RoutedEventArgs e)
         {
-            if (itemGridView.SelectedItem != null && itemGridView.SelectedItems.Count == 1)
+            if (ItemGridView.SelectedItem != null && ItemGridView.SelectedItems.Count == 1)
             {
                 Popup_RenameFolder.IsOpen = true;
-                Popup_RenameFolder.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                Popup_RenameFolder.Visibility = Visibility.Visible;
                 Popup_RenameFolder.Margin = new Thickness(45, 0, 0, 237);
-                TextBox_RenameFolder.Text = (itemGridView.SelectedItem as ExplorerItem).Name;
-                TextBox_RenameFolder.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+                var explorerItem = ItemGridView.SelectedItem as ExplorerItem;
+                if (explorerItem != null)
+                    TextBox_RenameFolder.Text = explorerItem.Name;
+                TextBox_RenameFolder.Focus(FocusState.Keyboard);
                 TextBox_RenameFolder.SelectAll();
             }
         }
 
         private async void ConfirmRenameFolderButtonClick(object sender, RoutedEventArgs e)
         {
-            if ((itemGridView.SelectedItem as ExplorerItem).Name != TextBox_RenameFolder.Text)
+            var explorerItem = ItemGridView.SelectedItem as ExplorerItem;
+            if (explorerItem != null && explorerItem.Name != TextBox_RenameFolder.Text)
             {
-                (itemGridView.SelectedItem as ExplorerItem).Name = TextBox_RenameFolder.Text;
-                if ((itemGridView.SelectedItem as ExplorerItem).StorageFolder != null)
-                    await (itemGridView.SelectedItem as ExplorerItem).StorageFolder.RenameAsync(TextBox_RenameFolder.Text, NameCollisionOption.ReplaceExisting);
-                else if ((itemGridView.SelectedItem as ExplorerItem).StorageFile != null)
-                    await (itemGridView.SelectedItem as ExplorerItem).StorageFile.RenameAsync(TextBox_RenameFolder.Text, NameCollisionOption.ReplaceExisting);
+                (ItemGridView.SelectedItem as ExplorerItem).Name = TextBox_RenameFolder.Text;
+                if ((ItemGridView.SelectedItem as ExplorerItem).StorageFolder != null)
+                    await (ItemGridView.SelectedItem as ExplorerItem).StorageFolder.RenameAsync(TextBox_RenameFolder.Text, NameCollisionOption.ReplaceExisting);
+                else if ((ItemGridView.SelectedItem as ExplorerItem).StorageFile != null)
+                    await (ItemGridView.SelectedItem as ExplorerItem).StorageFile.RenameAsync(TextBox_RenameFolder.Text, NameCollisionOption.ReplaceExisting);
                 await InitializeNavigator();
             }
             Popup_RenameFolder.IsOpen = false;
-            Popup_RenameFolder.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            Popup_RenameFolder.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -199,16 +188,16 @@ namespace MetroExplorer.Pages.ExplorerPage
     {
         private void Button_Detail_Click(object sender, RoutedEventArgs e)
         {
-            if (itemGridView.ItemTemplate == this.Resources["Standard300x80ItemTemplate"] as DataTemplate)
+            if (ItemGridView.ItemTemplate == Resources["Standard300x80ItemTemplate"] as DataTemplate)
             {
-                itemGridView.ItemTemplate = this.Resources["Standard300x180ItemTemplate"] as DataTemplate;
-                PageExplorer.BigSquareMode = true;
+                ItemGridView.ItemTemplate = Resources["Standard300x180ItemTemplate"] as DataTemplate;
+                BigSquareMode = true;
                 UserPreferenceRecord.GetInstance().WriteUserPreferenceRecord("Square");
             }
             else
             {
-                itemGridView.ItemTemplate = this.Resources["Standard300x80ItemTemplate"] as DataTemplate;
-                PageExplorer.BigSquareMode = false;
+                ItemGridView.ItemTemplate = Resources["Standard300x80ItemTemplate"] as DataTemplate;
+                BigSquareMode = false;
                 UserPreferenceRecord.GetInstance().WriteUserPreferenceRecord("List");
             }
             _counterForLoadUnloadedItems = 0;
@@ -226,35 +215,38 @@ namespace MetroExplorer.Pages.ExplorerPage
             if (!String.IsNullOrEmpty(DataSource.CurrentStorageFolder.Path))
             {
                 string secondaryTileId = DataSource.CurrentStorageFolder.Path.GetHashCode().ToString();
-                BottomAppBar.IsSticky = true;
-
-                if (SecondaryTile.Exists(secondaryTileId))
+                if (BottomAppBar != null)
                 {
-                    SecondaryTile secondaryTile = new SecondaryTile(secondaryTileId);
-                    bool isUnpinned = await secondaryTile.RequestDeleteForSelectionAsync(GetCenteredElementRect((FrameworkElement)sender), Windows.UI.Popups.Placement.Above);
+                    BottomAppBar.IsSticky = true;
 
-                    ToggleAppBarButton(isUnpinned);
+                    if (SecondaryTile.Exists(secondaryTileId))
+                    {
+                        SecondaryTile secondaryTile = new SecondaryTile(secondaryTileId);
+                        bool isUnpinned = await secondaryTile.RequestDeleteForSelectionAsync(GetCenteredElementRect((FrameworkElement)sender), Placement.Above);
+
+                        ToggleAppBarButton(isUnpinned);
+                    }
+                    else
+                    {
+                        Uri logo = new Uri("ms-appx:///Assets/AddNewFolder.png");
+                        string tileActivationArguments = secondaryTileId + " was pinned at " + DateTime.Now.ToLocalTime();
+                        SecondaryTile secondaryTile = new SecondaryTile(secondaryTileId,
+                            DataSource.CurrentStorageFolder.DisplayName,
+                            DataSource.CurrentStorageFolder.DisplayName,
+                            tileActivationArguments,
+                            TileOptions.ShowNameOnLogo,
+                            logo)
+                        {
+                            ForegroundText = ForegroundText.Dark,
+                            SmallLogo = new Uri("ms-appx:///Assets/appbar.home.png")
+                        };
+
+                        bool isPinned = await secondaryTile.RequestCreateForSelectionAsync(GetCenteredElementRect((FrameworkElement)sender), Placement.Above);
+
+                        ToggleAppBarButton(!isPinned);
+                    }
+                    BottomAppBar.IsSticky = false;
                 }
-                else
-                {
-                    Uri logo = new Uri("ms-appx:///Assets/AddNewFolder.png");
-                    string tileActivationArguments = secondaryTileId + " was pinned at " + DateTime.Now.ToLocalTime().ToString();
-                    string ss = DataSource.CurrentStorageFolder.Name;
-                    SecondaryTile secondaryTile = new SecondaryTile(secondaryTileId,
-                                                                    DataSource.CurrentStorageFolder.DisplayName,
-                                                                    DataSource.CurrentStorageFolder.DisplayName,
-                                                                    tileActivationArguments,
-                                                                    TileOptions.ShowNameOnLogo,
-                                                                    logo);
-
-                    secondaryTile.ForegroundText = ForegroundText.Dark;
-                    secondaryTile.SmallLogo = new Uri("ms-appx:///Assets/appbar.home.png");
-
-                    bool isPinned = await secondaryTile.RequestCreateForSelectionAsync(GetCenteredElementRect((FrameworkElement)sender), Windows.UI.Popups.Placement.Above);
-
-                    ToggleAppBarButton(!isPinned);
-                }
-                BottomAppBar.IsSticky = false;
             }
         }
 
@@ -266,7 +258,7 @@ namespace MetroExplorer.Pages.ExplorerPage
         private Rect GetCenteredElementRect(FrameworkElement sender)
         {
             Windows.UI.Xaml.Media.GeneralTransform buttonTransform = sender.TransformToVisual(null);
-            Windows.Foundation.Point point = buttonTransform.TransformPoint(new Point());
+            var point = buttonTransform.TransformPoint(new Point());
             return new Rect(point, new Size(sender.ActualWidth, sender.ActualHeight));
         }
 
@@ -274,40 +266,8 @@ namespace MetroExplorer.Pages.ExplorerPage
         {
             if (Button_PinUnPinToStart != null)
             {
-                Button_PinUnPinToStart.Style = (showPinButton) ? (this.Resources["PinAppBarButtonStyle"] as Style) : (this.Resources["UnpinAppBarButtonStyle"] as Style);
+                Button_PinUnPinToStart.Style = (showPinButton) ? (Resources["PinAppBarButtonStyle"] as Style) : (Resources["UnpinAppBarButtonStyle"] as Style);
             }
         }
     }
-
-    /// <summary>
-    /// Rotate photo
-    /// </summary>
-    public sealed partial class PageExplorer
-    {
-        private void RotateImage()
-        {
-            //Image myImage = new Image();
-            //FormattedText text = new FormattedText("ABC",
-            //        new CultureInfo("en-us"),
-            //        FlowDirection.LeftToRight,
-            //        new Typeface(this.FontFamily, FontStyles.Normal, FontWeights.Normal, new FontStretch()),
-            //        this.FontSize,
-            //        this.Foreground);
-
-            //DrawingVisual drawingVisual = new DrawingVisual();
-            //DrawingContext drawingContext = drawingVisual.RenderOpen();
-            //drawingContext.DrawText(text, new Point(2, 2));
-            //drawingContext.Close();
-
-            //RenderTargetBitmap bmp = new RenderTargetBitmap(180, 180, 120, 96, PixelFormats.Pbgra32);
-            //bmp.Render(drawingVisual);
-            //myImage.Source = bmp;
-
-            //// Add Image to the UI
-            //StackPanel myStackPanel = new StackPanel();
-            //myStackPanel.Children.Add(myImage);
-            //this.Content = myStackPanel;
-        }
-    }
-
 }
