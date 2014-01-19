@@ -13,7 +13,6 @@
     {
         #region Fields
 
-        private bool _isDragging;
         private readonly Map _map;
         private Location _mapCenter;
 
@@ -27,17 +26,17 @@
 
         public bool Focused { get; private set; }
 
+        public bool IsDragging { get; private set; }
+
         #endregion
 
         #region EventHandler
 
-        public Action<PointerRoutedEventArgs> DragStarted;
+        public Action<MapPin> DragStarted;
 
         public Action<PointerRoutedEventArgs> Dragging;
 
         public Action<PointerRoutedEventArgs> DragCompleted;
-
-        public event EventHandler<MapPinTappedEventArgs> MapPinTapped;
 
         public event EventHandler GetFocused;
 
@@ -54,6 +53,7 @@
             : this()
         {
             _map = map;
+            PointerPressed += MapPinPointerPressed;
         }
 
         public MapPin(
@@ -61,27 +61,10 @@
             : this()
         {
             LocationModel = locationModel;
-            PointerPressed += MapPinPointerPressed;
         }
 
         #endregion
 
-        protected override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            Tapped += OnTapped;
-        }
-
-        private void OnTapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (Focused)
-            {
-                VisualStateManager.GoToState(this, Marked ? "UnMarked" : "Marked", true);
-                Marked = !Marked;
-            }
-            if (MapPinTapped != null)
-                MapPinTapped(this, new MapPinTappedEventArgs(Marked));
-        }
         private void MapPinPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (_map != null)
@@ -92,17 +75,17 @@
                 _map.PointerReleasedOverride += MapPointerReleasedOverride;
             }
 
-            _isDragging = true;
+            IsDragging = true;
 
             if (DragStarted != null)
-                DragStarted(e);
+                DragStarted(this);
         }
 
         private void MapPointerMovedOverride(object sender, PointerRoutedEventArgs e)
         {
-            if (_isDragging && _map != null)
+            if (IsDragging && _map != null)
             {
-                if (_isDragging && _map != null)
+                if (IsDragging && _map != null)
                 {
                     Point currentPoint = e.GetCurrentPoint(_map).Position;
                     Point transferedPoint = new Point(currentPoint.X - Width / 2,
@@ -134,13 +117,11 @@
         {
             if (_map != null)
             {
-                _mapCenter = null;
-                _map.ViewChangeStarted -= MapViewChangeStarted;
                 _map.PointerMovedOverride -= MapPointerMovedOverride;
                 _map.PointerReleasedOverride -= MapPointerReleasedOverride;
             }
 
-            _isDragging = false;
+            IsDragging = false;
 
             if (DragCompleted != null)
             {

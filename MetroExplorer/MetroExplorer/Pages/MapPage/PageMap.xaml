@@ -250,6 +250,6 @@
         </VisualStateManager.VisualStateGroups>
 
         <!-- Back button and page title -->
-        <maps:Map x:Name="MapView" Grid.Row="1" Credentials="Are26uGLGiNyRU43-ChgoYyQl2gYL0G0HCp0rdPO5OFlr8Mn6uqy68HpHTVzJcUO" AllowDrop="True" PointerMovedOverride="MapViewPointerMovedOverride" PointerReleasedOverride="MapView_PointerReleasedOverride" />
+        <maps:Map x:Name="MapView" Grid.Row="1" Credentials="Are26uGLGiNyRU43-ChgoYyQl2gYL0G0HCp0rdPO5OFlr8Mn6uqy68HpHTVzJcUO" AllowDrop="True" PointerMovedOverride="MapViewPointerMovedOverride" PointerReleasedOverride="MapViewPointerReleasedOverride" />
     </Grid>
 </common:LayoutAwarePage>

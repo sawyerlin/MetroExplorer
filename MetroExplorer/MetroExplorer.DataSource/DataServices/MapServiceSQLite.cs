@@ -137,7 +137,7 @@
                 locationFolders.Aggregate(string.Empty, (current, next) =>
                 {
                     _locationFolders.Remove(next);
-                    return current + "'" + next.ID + "',";
+                    return current + "'" + next.Id + "',";
                 }).TrimEnd(',') + ")";
 
             SQLiteAsyncConnection connection = new SQLiteAsyncConnection(SQLiteConfiguration.ConnectionString);

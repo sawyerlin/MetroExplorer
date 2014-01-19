@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using Windows.ApplicationModel.Search;
     using Windows.UI.Xaml.Input;
     using Bing.Maps.Search;
@@ -185,32 +186,6 @@
 
         #endregion
 
-        private void MapViewPointerMovedOverride(object sender, PointerRoutedEventArgs e)
-        {
-            if (_isDragging && MapView != null)
-            {
-                Point currentPoint = e.GetCurrentPoint(MapView).Position;
-                Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
-                    currentPoint.Y - _focusedMapPin.Height / 2);
-                Location location;
-
-                if (MapView.TryPixelToLocation(transferedPoint, out location))
-                {
-                    MapLayer.SetPosition(_focusedMapPin, location);
-                }
-            }
-        }
-
-        private void MapView_PointerReleasedOverride(object sender, PointerRoutedEventArgs e)
-        {
-            if (_isDragging)
-            {
-                _isDragging = false;
-                _focusedMapPin = null;
-            }
-
-        }
-
         private void ButtonPositionPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (BottomAppBar != null) BottomAppBar.IsOpen = false;
@@ -230,35 +205,87 @@
             MapView.TryPixelToLocation(transferedPoint, out currentLocation);
             MapLayer.SetPosition(pin, currentLocation);
 
+            pin.DragStarted += DragStarted;
             pin.Dragging += Dragging;
 
             _focusedMapPin = pin;
             _isDragging = true;
+        }
 
-            e.Handled = true;
+        private async void MapViewPointerMovedOverride(object sender, PointerRoutedEventArgs e)
+        {
+            if (_isDragging && MapView != null)
+            {
+
+                Point currentPoint = e.GetCurrentPoint(MapView).Position;
+                Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
+                    currentPoint.Y - _focusedMapPin.Height / 2);
+                Location location;
+
+                if (MapView.TryPixelToLocation(transferedPoint, out location))
+                {
+                    MapLayer.SetPosition(_focusedMapPin, location);
+                }
+
+                await ShowAddress(e);
+            }
+        }
+
+        private void MapViewPointerReleasedOverride(object sender, PointerRoutedEventArgs e)
+        {
+            if (_isDragging)
+            {
+                _isDragging = false;
+                _focusedMapPin = null;
+            }
+        }
+
+        private void DragStarted(MapPin pin)
+        {
+            _focusedMapPin = pin;
         }
 
         private async void Dragging(PointerRoutedEventArgs pointerRoutedEventArgs)
         {
-            Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
-            Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
-                currentPoint.Y - _focusedMapPin.Height / 2);
-            Location location;
+            await ShowAddress(pointerRoutedEventArgs);
+        }
 
-            if (MapView.TryPixelToLocation(transferedPoint, out location))
+        private async Task ShowAddress(PointerRoutedEventArgs pointerRoutedEventArgs)
+        {
+            try
             {
-                _searchManager = MapView.SearchManager;
-                var reponse =
-                    await _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location));
 
-                if (reponse == null) return;
 
-                foreach (GeocodeLocation geoLocation in reponse.LocationData)
+                Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
+                Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
+                    currentPoint.Y - _focusedMapPin.Height / 2);
+                Location location;
+
+                if (MapView.TryPixelToLocation(transferedPoint, out location))
                 {
-                    string address = geoLocation.Address.FormattedAddress;
-                    _focusedMapPin.DataContext = address;
+                    _searchManager = MapView.SearchManager;
+                    var reponse =
+                        await _searchManager.ReverseGeocodeAsync(new ReverseGeocodeRequestOptions(location));
+
+                    if (reponse == null || reponse.LocationData == null) return;
+
+                    foreach (GeocodeLocation geoLocation in reponse.LocationData)
+                    {
+                        if (geoLocation.Address != null && geoLocation.Address.FormattedAddress != null)
+                        {
+                            string address = geoLocation.Address.FormattedAddress;
+                            _focusedMapPin.DataContext = address;
+                        }
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+                // ToDo: Find why The SyetemNullPointerException is throwed
+            }
         }
+
+
     }
 }
