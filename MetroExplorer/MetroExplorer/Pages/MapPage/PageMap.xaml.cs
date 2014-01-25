@@ -154,11 +154,7 @@
         private void MapViewViewChangeEnded(object sender,
             ViewChangeEndedEventArgs e)
         {
-            if (_lastFocusedMapPin != null && _lastFocusedMapPin.Focused)
-                _lastFocusedMapPin.UnFocus();
-
-            if (_focusedMapPin != null && !_focusedMapPin.Focused)
-                _focusedMapPin.Focus();
+            
         }
 
         private void SetLocations()

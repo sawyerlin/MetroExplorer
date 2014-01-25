@@ -32,44 +32,6 @@
 								</DoubleAnimationUsingKeyFrames>
 							</Storyboard>
 						</Grid.Resources>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="FocusStates">
-								<VisualStateGroup.Transitions>
-									<VisualTransition GeneratedDuration="0" To="Focused"/>
-								</VisualStateGroup.Transitions>
-								<VisualState x:Name="Focused">
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="path">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<Visibility>Visible</Visibility>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="path">
-											<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-											<EasingDoubleKeyFrame KeyTime="0:0:1" Value="360"/>
-										</DoubleAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="UnFocused"/>
-							</VisualStateGroup>
-							<VisualStateGroup x:Name="MarkStates">
-								<VisualState x:Name="Marked">
-									<Storyboard>
-										<ColorAnimation Duration="0" To="#FF8F0C0C" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse" d:IsOptimized="True"/>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill)" Storyboard.TargetName="ellipse">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<SolidColorBrush Color="#FF8F0C0C"/>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="UnMarked"/>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
 						<Ellipse Stretch="Fill" StrokeThickness="2" StrokeLineJoin="Round" Stroke="#FFD61D1D" Visibility="Collapsed"/>
 						<Ellipse x:Name="ellipse" Stretch="Fill" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FFD61D1D" Width="20" Height="20" Margin="5" Visibility="Collapsed"/>
 						<Path x:Name="path" Stretch="Fill" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FFD61D1D" Fill="#FFD02626" Data="F1 M -428.429,-6.10352e-005L -421.72,-15.9999L -435.138,-15.9999L -428.429,-6.10352e-005 Z " UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5,-12.25,2.75,10" Height="22.25" Width="14.75" RenderTransformOrigin="0.5,1" Visibility="Collapsed">
