@@ -5,6 +5,7 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
+    using Windows.UI.Core;
     using Windows.ApplicationModel.Search;
     using Windows.UI.Xaml.Input;
     using Bing.Maps.Search;
@@ -34,9 +35,9 @@
 
         // MapPins
         private MapPin _focusedMapPin;
-        private readonly MapPin _lastFocusedMapPin;
-
         private bool _isDragging;
+        private Point _lastPoint;
+        private Point _currentPoint;
 
         #endregion
 
@@ -44,7 +45,6 @@
 
         public PageMap()
         {
-            _lastFocusedMapPin = null;
             _mapLocationFolders = new ObservableCollection<MapLocationFolderModel>();
             InitializeComponent();
 
@@ -81,8 +81,6 @@
 
             SetLocations();
 
-            MapView.ViewChangeEnded += MapViewViewChangeEnded;
-
             _searchPane.QuerySubmitted += SearchPaneQuerySubmitted;
             _searchPane.SuggestionsRequested += SearchPaneSuggestionsRequested;
         }
@@ -90,7 +88,6 @@
         protected override void SaveState(
             Dictionary<String, Object> pageState)
         {
-            MapView.ViewChangeEnded -= MapViewViewChangeEnded;
             _searchPane.QuerySubmitted -= SearchPaneQuerySubmitted;
             _searchPane.SuggestionsRequested -= SearchPaneSuggestionsRequested;
         }
@@ -151,12 +148,6 @@
             //DefaultViewModel["UnMarkable"] = (bool)DefaultViewModel["Linkable"];
         }
 
-        private void MapViewViewChangeEnded(object sender,
-            ViewChangeEndedEventArgs e)
-        {
-            
-        }
-
         private void SetLocations()
         {
 
@@ -191,7 +182,7 @@
             MapPin pin = new MapPin(MapView);
 
             Point currentPoint = e.GetCurrentPoint(MapView).Position;
-
+            _currentPoint = currentPoint;
             Location currentLocation;
             MapView.TryPixelToLocation(currentPoint, out currentLocation);
             MapLayer.SetPosition(pin, currentLocation);
@@ -203,27 +194,34 @@
 
             pin.DragStarted += DragStarted;
             pin.Dragging += Dragging;
+            pin.DragCompleted += DragCompleted;
 
             _focusedMapPin = pin;
             _isDragging = true;
+        }
+
+        private void DragCompleted(PointerRoutedEventArgs pointerRoutedEventArgs)
+        {
+            _focusedMapPin.HidePanel();
         }
 
         private async void MapViewPointerMovedOverride(object sender, PointerRoutedEventArgs e)
         {
             if (_isDragging && MapView != null)
             {
-
+                _focusedMapPin.HidePanel();
+                _lastPoint = _currentPoint;
                 Point currentPoint = e.GetCurrentPoint(MapView).Position;
+                _currentPoint = currentPoint;
+
                 Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
                     currentPoint.Y - _focusedMapPin.Height / 2);
                 Location location;
 
                 if (MapView.TryPixelToLocation(transferedPoint, out location))
-                {
                     MapLayer.SetPosition(_focusedMapPin, location);
-                }
 
-                await ShowAddress(e);
+                await ShowAddressPanel(e);
             }
         }
 
@@ -231,6 +229,7 @@
         {
             if (_isDragging)
             {
+                _focusedMapPin.HidePanel();
                 _isDragging = false;
                 _focusedMapPin = null;
             }
@@ -238,20 +237,39 @@
 
         private void DragStarted(MapPin pin)
         {
+            _currentPoint = pin.CurrentLocation;
             _focusedMapPin = pin;
         }
 
         private async void Dragging(PointerRoutedEventArgs pointerRoutedEventArgs)
         {
-            await ShowAddress(pointerRoutedEventArgs);
+            if (_focusedMapPin != null)
+                _focusedMapPin.HidePanel();
+            _lastPoint = _currentPoint;
+            Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
+            _currentPoint = currentPoint;
+            await ShowAddressPanel(pointerRoutedEventArgs);
+        }
+
+        private async Task ShowAddressPanel(PointerRoutedEventArgs pointerRoutedEventArgs)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(200));
+                if (_focusedMapPin != null)
+                {
+                    if (_lastPoint == _currentPoint)
+                        _focusedMapPin.ShowPanel();
+
+                    await ShowAddress(pointerRoutedEventArgs);
+                }
+            });
         }
 
         private async Task ShowAddress(PointerRoutedEventArgs pointerRoutedEventArgs)
         {
             try
             {
-
-
                 Point currentPoint = pointerRoutedEventArgs.GetCurrentPoint(MapView).Position;
                 Point transferedPoint = new Point(currentPoint.X - _focusedMapPin.Width / 2,
                     currentPoint.Y - _focusedMapPin.Height / 2);
@@ -270,7 +288,7 @@
                         if (geoLocation.Address != null && geoLocation.Address.FormattedAddress != null)
                         {
                             string address = geoLocation.Address.FormattedAddress;
-                            _focusedMapPin.DataContext = address;
+                            _focusedMapPin.Address = address;
                         }
                     }
                 }

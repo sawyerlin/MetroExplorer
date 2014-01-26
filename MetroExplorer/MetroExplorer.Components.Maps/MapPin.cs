@@ -2,6 +2,7 @@
 {
     using System;
     using Windows.Foundation;
+    using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Input;
     using Bing.Maps;
@@ -16,9 +17,24 @@
 
         #endregion
 
+        #region Dependency Properties
+
+        public static readonly DependencyProperty AddressProperty = DependencyProperty.Register(
+            "Address", typeof(string), typeof(MapPin), new PropertyMetadata("Loading ..."));
+
+        public string Address
+        {
+            get { return (string)GetValue(AddressProperty); }
+            set { SetValue(AddressProperty, value); }
+        }
+
+        #endregion
+
         #region Properties
 
         public MapLocationModel LocationModel { get; set; }
+
+        public Point CurrentLocation { get; set; }
 
         public bool IsDragging { get; private set; }
 
@@ -57,6 +73,8 @@
 
         #endregion
 
+        #region Events
+
         private void MapPinPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (_map != null)
@@ -68,7 +86,7 @@
             }
 
             IsDragging = true;
-
+            CurrentLocation = e.GetCurrentPoint(_map).Position;
             if (DragStarted != null)
                 DragStarted(this);
         }
@@ -85,15 +103,11 @@
                     Location location;
 
                     if (_map.TryPixelToLocation(transferedPoint, out location))
-                    {
                         MapLayer.SetPosition(this, location);
-                    }
                 }
 
                 if (Dragging != null)
-                {
                     Dragging(e);
-                }
             }
         }
 
@@ -119,5 +133,21 @@
                 DragCompleted(e);
             }
         }
+
+        #endregion
+
+        #region Public Methods
+
+        public void ShowPanel()
+        {
+            VisualStateManager.GoToState(this, "Holding", true);
+        }
+
+        public void HidePanel()
+        {
+            VisualStateManager.GoToState(this, "Moving", true);
+        }
+
+        #endregion
     }
 }

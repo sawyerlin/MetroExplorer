@@ -4,34 +4,27 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Windows.ApplicationModel.DataTransfer;
     using Windows.ApplicationModel.Search;
     using Windows.Storage;
     using Windows.Storage.Streams;
-    using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
     using Core;
     using Core.Objects;
 
     public sealed partial class PageExplorer
     {
-        private SearchPane _searchPane;
+        private readonly SearchPane _searchPane;
 
         private async Task InitializeSearch(Object navigationParameter)
         {
             string args = navigationParameter as string;
             if (args != null)
             {
-                var currentContent = Window.Current.Content;
-                var frame = currentContent as Frame;
-
                 // ToDo: Consider a better solution (Sawyer)
                 App.LastQuery = App.CurrentQuery = string.Empty;
 
-                if (args != null)
-                    await Search(args);
+                await Search(args);
             }
         }
 
