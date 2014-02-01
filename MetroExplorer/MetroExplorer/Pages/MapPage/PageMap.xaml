@@ -177,7 +177,7 @@
 					</Button.Style>
                 </Button>
                 <Button x:Name="ButtonHome" HorizontalAlignment="Right" VerticalAlignment="Stretch" 
-						x:Uid="UidMapPageAppBarMyPosition">
+						x:Uid="UidMapPageAppBarMyPosition" Click="ButtonHomeClick">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource AppBarButtonStyle}">
                             <Setter Property="AutomationProperties.Name" Value="Ma Position"/>

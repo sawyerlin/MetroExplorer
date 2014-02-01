@@ -1,4 +1,6 @@
-﻿namespace MetroExplorer.Pages.MapPage
+﻿using Windows.Devices.Geolocation;
+
+namespace MetroExplorer.Pages.MapPage
 {
     using System;
     using System.Collections.Generic;
@@ -171,6 +173,14 @@
 
         }
 
+        private async void ButtonHomeClick(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            Geolocator currentGeolocator = new Geolocator();
+            Geoposition position = await currentGeolocator.GetGeopositionAsync();
+            Location location = new Location(position.Coordinate.Latitude, position.Coordinate.Longitude);
+            MapView.SetView(location, 15.0f);
+        }
+
         #endregion
 
         private void ButtonPositionPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -299,7 +309,6 @@
                 // ToDo: Find why The SyetemNullPointerException is throwed
             }
         }
-
 
     }
 }
