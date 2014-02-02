@@ -2,10 +2,26 @@ MetroExplorer
 =============
 Description:
 
-MetroExplorer is a Full featured file manager on Windows 8, fresh UI design and user friendly funtions!
+MetroExplorer is a Full featured file manager on Windows 8, fresh UI design and user friendly functions!
 Organize and manage your files and folders in an easy and effective way, Try it!
 
 License:
-The code is free and available for all community, opensource software and education. It is forbidden to be used in commercial software without paying 200 dollars. If you would like to use any components in this project in your commercial product, please contact us: metro-explorer-product@googlegroups.com 
+Copyright (c) 2013 CasaTeam
 
-copyright casateam
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
