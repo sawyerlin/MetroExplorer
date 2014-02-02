@@ -127,6 +127,10 @@
       <Project>{4D3EECF8-7C0A-4F21-BDBC-4E36D6C7D304}</Project>
       <Name>MetroExplorer.DataSource</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MetroExplorer.Model\MetroExplorer.Model.csproj">
+      <Project>{101f51c7-efd7-49f3-b74d-c26deea543cc}</Project>
+      <Name>MetroExplorer.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">

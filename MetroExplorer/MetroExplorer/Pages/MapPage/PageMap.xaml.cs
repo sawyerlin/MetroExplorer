@@ -1,4 +1,5 @@
-﻿using Windows.Devices.Geolocation;
+﻿using Windows.UI.Xaml;
+using MetroExplorer.Model.MapModel;
 
 namespace MetroExplorer.Pages.MapPage
 {
@@ -9,6 +10,7 @@ namespace MetroExplorer.Pages.MapPage
     using System.Threading.Tasks;
     using Windows.UI.Core;
     using Windows.ApplicationModel.Search;
+    using Windows.Devices.Geolocation;
     using Windows.UI.Xaml.Input;
     using Bing.Maps.Search;
     using Bing.Maps;
@@ -43,6 +45,19 @@ namespace MetroExplorer.Pages.MapPage
 
         #endregion
 
+        #region Dependency Properties
+
+        public static readonly DependencyProperty MapPinModelProperty = DependencyProperty.Register(
+            "MapPinModel", typeof (MapPinModel), typeof (PageMap), new PropertyMetadata(default(MapPinModel)));
+
+        public MapPinModel MapPinModel
+        {
+            get { return (MapPinModel) GetValue(MapPinModelProperty); }
+            set { SetValue(MapPinModelProperty, value); }
+        }
+
+        #endregion
+
         #region Constructors
 
         public PageMap()
@@ -60,6 +75,12 @@ namespace MetroExplorer.Pages.MapPage
 
             MapView.AllowDrop = true;
             ButtonPosition.AddHandler(PointerPressedEvent, new PointerEventHandler(ButtonPositionPointerPressed), true);
+
+            MapPinModel = new MapPinModel
+            {
+                Address = "Test"
+            };
+
         }
 
         #endregion
@@ -173,11 +194,12 @@ namespace MetroExplorer.Pages.MapPage
 
         }
 
-        private async void ButtonHomeClick(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void ButtonHomeClick(object sender, RoutedEventArgs e)
         {
             Geolocator currentGeolocator = new Geolocator();
             Geoposition position = await currentGeolocator.GetGeopositionAsync();
-            Location location = new Location(position.Coordinate.Latitude, position.Coordinate.Longitude);
+            BasicGeoposition point = position.Coordinate.Point.Position;
+            Location location = new Location(point.Latitude, point.Latitude);
             MapView.SetView(location, 15.0f);
         }
 
@@ -205,14 +227,24 @@ namespace MetroExplorer.Pages.MapPage
             pin.DragStarted += DragStarted;
             pin.Dragging += Dragging;
             pin.DragCompleted += DragCompleted;
+            pin.Tapped += PinTapped;
 
             _focusedMapPin = pin;
             _isDragging = true;
         }
 
+        private void PinTapped(object sender, TappedRoutedEventArgs e)
+        {
+            MapPin newFocusedPin = (MapPin)sender;
+            if (newFocusedPin == _focusedMapPin) return;
+            _focusedMapPin = newFocusedPin;
+            MapPinModel = _focusedMapPin.MapPinModel;
+        }
+
         private void DragCompleted(PointerRoutedEventArgs pointerRoutedEventArgs)
         {
             _focusedMapPin.HidePanel();
+            _focusedMapPin = null;
         }
 
         private async void MapViewPointerMovedOverride(object sender, PointerRoutedEventArgs e)
@@ -309,6 +341,5 @@ namespace MetroExplorer.Pages.MapPage
                 // ToDo: Find why The SyetemNullPointerException is throwed
             }
         }
-
     }
 }

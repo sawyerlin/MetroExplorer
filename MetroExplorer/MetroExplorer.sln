@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer", "MetroExplorer\MetroExplorer.csproj", "{68121672-25A8-4A15-A449-A75133CDA6EC}"
 EndProject
@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{153FF3
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "MetroExplorer.Model", "MetroExplorer.Model\MetroExplorer.Model.modelproj", "{462867FB-5154-4733-82F5-010A246EA065}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroExplorer.Model", "MetroExplorer.Model\MetroExplorer.Model.csproj", "{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,20 +148,26 @@ Global
 		{4D3EECF8-7C0A-4F21-BDBC-4E36D6C7D304}.Release|x64.Build.0 = Release|x64
 		{4D3EECF8-7C0A-4F21-BDBC-4E36D6C7D304}.Release|x86.ActiveCfg = Release|x86
 		{4D3EECF8-7C0A-4F21-BDBC-4E36D6C7D304}.Release|x86.Build.0 = Release|x86
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|Any CPU.Build.0 = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|ARM.ActiveCfg = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|x64.ActiveCfg = Release|Any CPU
-		{462867FB-5154-4733-82F5-010A246EA065}.Release|x86.ActiveCfg = Release|Any CPU
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|ARM.ActiveCfg = Debug|ARM
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|ARM.Build.0 = Debug|ARM
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|x64.ActiveCfg = Debug|x64
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|x64.Build.0 = Debug|x64
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|x86.ActiveCfg = Debug|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Debug|x86.Build.0 = Debug|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|ARM.ActiveCfg = Release|ARM
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|ARM.Build.0 = Release|ARM
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|Mixed Platforms.Build.0 = Release|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|x64.ActiveCfg = Release|x64
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|x64.Build.0 = Release|x64
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|x86.ActiveCfg = Release|x86
+		{101F51C7-EFD7-49F3-B74D-C26DEEA543CC}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

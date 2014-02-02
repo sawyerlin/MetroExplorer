@@ -5,8 +5,10 @@
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media;
     using Bing.Maps;
     using DataSource.DataModels;
+    using Model.MapModel;
 
     public sealed class MapPin : Control
     {
@@ -26,6 +28,19 @@
         {
             get { return (string)GetValue(AddressProperty); }
             set { SetValue(AddressProperty, value); }
+        }
+
+        public static readonly DependencyProperty MapPinModelProperty = DependencyProperty.Register(
+            "MapPinModel", typeof(MapPinModel), typeof(MapPin), new PropertyMetadata(new MapPinModel
+            {
+                Address = "Test",
+                Image = new ImageBrush()
+            }));
+
+        public MapPinModel MapPinModel
+        {
+            get { return (MapPinModel)GetValue(MapPinModelProperty); }
+            set { SetValue(MapPinModelProperty, value); }
         }
 
         #endregion
@@ -74,6 +89,14 @@
         #endregion
 
         #region Events
+
+        protected override void OnTapped(TappedRoutedEventArgs e)
+        {
+            base.OnTapped(e);
+            // ToDo: Change MapPinModel
+            MapPinModel.Address = Address;
+            MapPinModel.Image = new ImageBrush();
+        }
 
         private void MapPinPointerPressed(object sender, PointerRoutedEventArgs e)
         {
